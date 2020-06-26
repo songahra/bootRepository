@@ -1,3 +1,13 @@
+/*
+ * ------------------------------------------------------
+ * PROJECT : AI기반 솔루션 지식자산화 
+ * NAME : KAKNM01DAO.java
+ * ------------------------------------------------------
+ * REVERSION :
+ * 2020.06.18  신동경   최초작성
+ * ------------------------------------------------------
+ * */
+
 package com.izt.knm;
 
 import java.util.List;
@@ -12,8 +22,13 @@ public class KAKNM01DAO {
     @Autowired
 	private SqlSession sqlSession;
     
-    public List<KAKNM01VO> selectList(){
-        System.out.println("KAKNM01DAO selectList called...");
-        return sqlSession.selectList("kAKNM01DAO.selectList");
+    public List<KAKNM01VO> getAllList(){
+        System.out.println("KAKNM01DAO getAllList called...");
+        return sqlSession.selectList("kAKNM01DAO.getAllList");
+    }
+
+    public List<KAKNM01VO> getList(KAKNM01VO kAKNM01VO){
+        System.out.println("KAKNM01VO getList called...");
+        return sqlSession.selectList("kAKNM01DAO.getList", kAKNM01VO);
     }
 }
