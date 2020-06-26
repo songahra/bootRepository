@@ -10,4 +10,73 @@
 	]]>
 	</select>
 
+	<!-- 회원가입 -->
+	<insert id="signUp" parameterType="KALOG01VO">
+	<![CDATA[
+	INSERT INTO tb_user (
+		user_id,
+		user_name,
+		user_pw,
+		company,
+		user_type,
+		reg_date,
+		solution,
+		dept
+	) VALUES (
+		#{user_id},
+		#{user_name},
+		#{user_pw},
+		#{company},
+		#{user_type},
+		NOW(),
+		#{solution},
+		#{dept}
+	)
+	]]>
+	</insert>
+
+	<!-- 로그인 checkId-->
+	<select id="checkId" parameterType="String" resultType="KALOG01VO">
+	<![CDATA[
+	SELECT *
+	FROM tb_user
+	WHERE user_id = #{user_id} AND login_lock = 'N'
+	]]>
+	</select>
+
+	<!-- 로그인 실패 count++ --> 
+	<insert id="loginCount" parameterType="String">
+	<![CDATA[
+	UPDATE tb_user
+	SET login_cnt = login_cnt + 1
+	WHERE user_id = #{user_id}
+	]]>
+	</insert>
+
+	<!-- 로그인 시도 count 조회 --> 
+	<select id="selectCount" resultType="int">
+	<![CDATA[
+	SELECT login_cnt
+	FROM tb_user
+	WHERE user_id = #{user_id}
+	]]>
+	</select>
+
+	<!-- 계정 잠금 -->
+	<update id="loginRock" parameterType="String">
+	<![CDATA[
+	UPDATE tb_user
+	SET login_lock='Y'
+	WHERE user_id= #{user_id}
+	]]>
+	</update>
+
+	<!-- 계정 잠금 여부 확인 -->
+	<select id="selectLock" parameterType="String" resultType="String">
+	<![CDATA[
+	SELECT login_lock
+	FROM tb_user
+	WHERE user_id = #{user_id}
+	]]>
+	</select>
 </mapper>
