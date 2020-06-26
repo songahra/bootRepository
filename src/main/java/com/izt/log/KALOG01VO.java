@@ -1,5 +1,9 @@
 package com.izt.log;
 
+// import javax.validation.constraints.Email;
+// import javax.validation.constraints.NotBlank;
+// import javax.validation.constraints.Pattern;
+
 public class KALOG01VO {
 
 	private String user_id;
@@ -14,6 +18,8 @@ public class KALOG01VO {
 	private String login_lock;
 	private String use_yn;
 	private String profile_image;
+	private String solution;
+	private String dept;
 
 	public String getUser_id() {
 		return user_id;
@@ -87,13 +93,26 @@ public class KALOG01VO {
 	public void setProfile_image(String profile_image) {
 		this.profile_image = profile_image;
 	}
+	public String getSolution() {
+		return solution;
+	}
+	public void setSolution(String solution) {
+		this.solution = solution;
+	}
+	public String getDept() {
+		return dept;
+	}
+	public void setDept(String dept) {
+		this.dept = dept;
+	}
 	
 	@Override
 	public String toString() {
-		return "KALOG0101VO [user_id=" + user_id + ", user_name=" + user_name + ", user_pw=" + user_pw + ", company="
+		return " [user_id=" + user_id + ", user_name=" + user_name + ", user_pw=" + user_pw + ", company="
 				+ company + ", user_type=" + user_type + ", reg_date=" + reg_date + ", update_date=" + update_date
 				+ ", update_userid=" + update_userid + ", login_cnt=" + login_cnt + ", login_lock=" + login_lock
-				+ ", use_yn=" + use_yn + ", profile_image=" + profile_image + "]";
+				+ ", use_yn=" + use_yn + ", profile_image=" + profile_image + ", solution=" + solution + ", dept="
+				+ dept + "]";
 	}
 	 
 }
