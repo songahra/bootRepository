@@ -92,10 +92,13 @@ public class KALOG01Service {
          Claims claims = Jwts.claims()
          .setIssuedAt(new Date())
          .setExpiration(new Date(cal.getTimeInMillis())); //만료일 설정
-         claims.put("user_id", KALOG01VO.getUser_id());
-         claims.put("user_name", KALOG01VO.getUser_name());
+
+         //payload
+         claims.put("user_id", KALOG01VO.getUser_id()); 
+         claims.put("user_name", KALOG01VO.getUser_name()); 
          claims.put("user_type", KALOG01VO.getUser_type());
          claims.put("company", KALOG01VO.getCompany());
+         claims.put("solution", KALOG01VO.getSolution());
 
 
          String token = Jwts.builder()
@@ -105,5 +108,12 @@ public class KALOG01Service {
          .compact();
 
          return token;
+    }
+    
+    //아이디 중복 체크
+    public int idCheck(String user_id){
+        System.out.println("아이디 중복체크 서비스 도착");
+        int count = KALOG01DAO.idCheck(user_id);
+        return count;
     }
 }

@@ -57,10 +57,23 @@ public class KALOG01Controller {
     @PostMapping(value="signUp")
     public ResponseEntity signUp(@RequestBody KALOG01VO KALOG01VO){
         System.out.println("회원가입 컨트롤러 도착");
-       System.out.println(KALOG01VO.toString());
+        System.out.println(KALOG01VO.toString());
            KALOG01Service.signUp(KALOG01VO);
+        
         return new ResponseEntity<>("회원가입 성공",  HttpStatus.valueOf(200));
         }
 
+        
+    // 아이디 중복 확인
+    @PostMapping(value="idCheck")
+    public ResponseEntity idCheck(@RequestBody KALOG01VO KALOG01VO){
+        System.out.println("아이디 중복 확인 컨트롤러 도착");
+        int count = KALOG01Service.idCheck(KALOG01VO.getUser_id());
+        if( count == 1){
+            return  new ResponseEntity<>("아이디 중복",  HttpStatus.valueOf(405));
+        }
+        return new ResponseEntity<>("아이디 중복 없음",  HttpStatus.valueOf(200));
+
+    }
 
 }

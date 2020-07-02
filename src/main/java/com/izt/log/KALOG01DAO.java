@@ -52,4 +52,10 @@ public class KALOG01DAO {
       return sqlSession.selectOne("selectLock", user_id);
    }
 
+   //아이디 중복 체크
+   public int idCheck(String user_id){
+      System.out.println("idCheck DAO도착");
+      return sqlSession.selectOne("idCheck", user_id); //중복 아이디 있으면 1 반환
+   }
+
 }

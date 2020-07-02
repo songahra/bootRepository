@@ -1,8 +1,6 @@
 package com.izt.log;
 
-// import javax.validation.constraints.Email;
-// import javax.validation.constraints.NotBlank;
-// import javax.validation.constraints.Pattern;
+import org.springframework.web.multipart.MultipartFile;
 
 public class KALOG01VO {
 
@@ -17,7 +15,7 @@ public class KALOG01VO {
 	private String login_cnt;
 	private String login_lock;
 	private String use_yn;
-	private String profile_image;
+	private MultipartFile[] profile_image;
 	private String solution;
 	private String dept;
 
@@ -87,10 +85,10 @@ public class KALOG01VO {
 	public void setUse_yn(String use_yn) {
 		this.use_yn = use_yn;
 	}
-	public String getProfile_image() {
+	public MultipartFile[] getProfile_image() {
 		return profile_image;
 	}
-	public void setProfile_image(String profile_image) {
+	public void setProfile_image(MultipartFile[] profile_image) {
 		this.profile_image = profile_image;
 	}
 	public String getSolution() {
