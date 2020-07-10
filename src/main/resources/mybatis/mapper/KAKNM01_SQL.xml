@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kAKNM01DAO">
+<mapper namespace="kAKNM01">
 	
 	<select id="getAllList" resultType="KAKNM01VO">
 		<![CDATA[
@@ -9,32 +9,36 @@
                    (ROW_NUMBER() OVER()) AS rowNum
                  , (select tc.code_content 
                       from tb_code tc 
-                     where tc.code_id = tq.solution_code ) AS solution_code
+                     where tc.code_id = tq.solution_id ) AS solution_id 
                  , tq.title 
                  , (select tu.user_name 
                       from tb_user tu 
                      where tu.user_id = tq.reg_userid ) AS reg_userid_tq
-                 , tq.reg_date AS reg_date_tq
+                 , tq.reg_date ::timestamp::date AS reg_date_tq
                  , (select tu.user_name 
                       from tb_user tu 
                      where tu.user_id = ta.reg_userid ) AS reg_userid_ta
-                 , ta.reg_date AS reg_date_ta
-                 , CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAY') AS term
+                 , ta.reg_date ::timestamp::date AS reg_date_ta
+                 , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
+                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
+                         when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') <= '00'
+                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'HH'), ' HOURS')
+                         else '--' end) AS term              
                  , (case when tq.status = 'SS' then '완료'
                          when tq.status = 'RQ' then '재질문' 
                          when tq.status = 'NN' then '미완료' end) AS status
               FROM tb_question tq
               LEFT JOIN tb_answer ta
-                ON tq.answer_id = ta.answer_id 
+                ON tq.answer_id = ta.answer_id
             /* order by tq.question_id */
 		]]>
 	</select>
 
-    <select id="getList" parameterType="KAKNM01VO" resultType="KAKNM01VO">
+    <select id="srchList" parameterType="KAKNM01VO" resultType="KAKNM01VO">
 		<![CDATA[
-            select /* sdk knm/KAKNM01_SQL.xml - getList */
+            select /* sdk knm/KAKNM01_SQL.xml - srchList */
                    (ROW_NUMBER() OVER()) AS rowNum
-                 , foo.solution_code
+                 , foo.solution_id
                  , foo.title
                  , foo.reg_userid_tq
                  , foo.reg_date_tq
@@ -46,7 +50,7 @@
              inner join 
            (select (select tc.code_content 
                       from tb_code tc 
-                     where tc.code_id = tq.solution_code ) as solution_code
+                     where tc.code_id = tq.solution_id ) as solution_id
                  , tq.title as title
                  , (select tu.user_name 
                       from tb_user tu 
@@ -56,7 +60,10 @@
                       from tb_user tu 
                      where tu.user_id = ta.reg_userid ) as  reg_userid_ta
                  , ta.reg_date as reg_date_ta 
-                 , CONCAT(TO_CHAR((TA.reg_date - TQ.reg_date ), 'DD'), ' DAY') as term
+                 , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
+                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
+                         when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') <= '00'
+                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'HH'), ' HOURS') end)as term
                  , (case when tq.status = 'SS' then '완료' 
                          when tq.status = 'RQ' then '재질문' 
                          when tq.status = 'NN' then '미완료' end) as status
@@ -106,7 +113,7 @@
           <![CDATA[
           ) as foo
              on tt.post_id = foo.question_id
-          where 1=1
+          WHERE 1=1
           ]]>
           <if test='tag_tag != "" and tag_tag != null '> 
           <![CDATA[
@@ -147,7 +154,52 @@
 		]]>
 	</select>
 
-	<insert id="insertQuInfo" parameterType="KAKNM01VO">
+     <select id="getPrList"  parameterType="map"  resultType="KAKNM01VO">
+		<![CDATA[
+            select /* sdk knm/KAKNM01_SQL.xml - getPrList */
+                   project_id
+                 , project_name
+                 , customer
+                 , CONCAT(project_start_date, ' ~ ', project_end_date) as term
+              from tb_project
+		]]>
+	</select>
+
+     <select id="srchPrList"  resultType="KAKNM01VO">
+		<![CDATA[
+            SELECT /* sdk knm/KAKNM01_SQL.xml - srchPrList */
+                   project_id
+                 , project_name
+                 , customer
+                 , CONCAT(project_start_date, ' ~ ', project_end_date) as term
+              FROM tb_project
+             WHERE 1=1 
+		]]>
+          <if test='project_id != "" and project_id != null '> 
+          <![CDATA[
+               AND project_id = #{project_id}
+          ]]>
+          </if>
+          <if test='project_name != "" and project_name != null '> 
+          <![CDATA[
+               AND project_name = #{project_name}
+          ]]>
+          </if>
+          <if test='customer != "" and customer != null '> 
+          <![CDATA[
+               AND customer = #{customer}
+          ]]>
+          </if>
+	</select>
+     
+     <select id="srchQuId"  parameterType="String" resultType="KAKNM01VO">
+		<![CDATA[ /* sdk knm/KAKNM01_SQL.xml - srchQuId */
+            SELECT max(#{question_id}) 
+              FROM tb_question
+		]]>
+	</select>
+
+	<insert id="insertQuInfo" parameterType="KAKNM01VO"> 
 		<![CDATA[
             WITH INS1 AS(
                INSERT 
@@ -155,23 +207,21 @@
                     ( question_id
                     , project_id
                     , reg_userid 
-                    , solution_code 
+                    , solution_id
                     , title 
                     , content_q 
                     , content_s
                     , err_log)
                VALUES 
-                    ( CONCAT('QU', TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDDHH24MISSMS'))
-                    , (select project_id 
-                 FORM tb_project 
-                WHERE project_name = #{project_id})
-                    , #{userId}
-                    , #{solution_code}
+                    ( #{question_id}
+                    , #{project_id}
+                    , #{userid}
+                    , #{solution_id}
                     , #{title}
                     , #{content_q}
                     , #{content_s}
                     , #{err_log})
-               RETRUNING question_id, reg_userid
+            RETURNING question_id, reg_userid
             ), INST2 AS (
                INSERT 
                  INTO tb_point 
@@ -184,11 +234,12 @@
                VALUES 
                     ( CONCAT('PO', TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDDHH24MISSMS'))
                     , (select reg_userid 
-                         from INS1))
-                    , #{point_value}
-                    , #{act_code}
-                    , #{post_type}
-                    , #{post_id}
+                         from INS1)
+                    , (select tc.code_content::integer
+                         from tb_code tc
+                        where TC.CODE_ID = 'PA010000')
+                    , 'PA010000'
+                    , 'Q'
                     , (select question_id 
                          from INS1))
              ) INSERT 
