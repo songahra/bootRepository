@@ -1,5 +1,8 @@
 package com.izt.log;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -49,13 +52,19 @@ public class KALOG01DAO {
 
    //사용자 계정 잠금 여부 확인
    public String selectLock(String user_id){
-      return sqlSession.selectOne("selectLock", user_id);
+      return sqlSession.selectOne("selectL ck", user_id);
    }
 
    //아이디 중복 체크
    public int idCheck(String user_id){
       System.out.println("idCheck DAO도착");
       return sqlSession.selectOne("idCheck", user_id); //중복 아이디 있으면 1 반환
+   }
+
+   //솔루션 목록
+   public List<Map<String,String>> getSolution(){
+      System.out.println(sqlSession.selectList("getSolution"));
+      return sqlSession.selectList("getSolution");
    }
 
 }

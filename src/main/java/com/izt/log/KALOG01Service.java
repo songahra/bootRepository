@@ -3,8 +3,10 @@ package com.izt.log;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.SqlSession;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -99,7 +101,7 @@ public class KALOG01Service {
          claims.put("user_type", KALOG01VO.getUser_type());
          claims.put("company", KALOG01VO.getCompany());
          claims.put("solution", KALOG01VO.getSolution());
-
+         claims.put("dept", KALOG01VO.getDept());
 
          String token = Jwts.builder()
          .setHeaderParam("typ", "JWT")
@@ -115,5 +117,10 @@ public class KALOG01Service {
         System.out.println("아이디 중복체크 서비스 도착");
         int count = KALOG01DAO.idCheck(user_id);
         return count;
+    }
+
+    //솔루션 리스트 가져오기
+    public List<Map<String,String>> getSolution(){
+        return KALOG01DAO.getSolution();
     }
 }

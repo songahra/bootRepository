@@ -1,13 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="KALOG01">
-<!-- 비밀번호 변경 -->
-	<update id="updatePassword" parameterType="String">
+<mapper namespace="KAPRM01">
+	<!-- 비밀번호 변경 -->
+	<update id="updatePw" parameterType="Map">
 	<![CDATA[
 	UPDATE tb_user
-	SET user_pw = #{user_pw}
+	SET user_pw = #{update_pw}
 	WHERE user_id = #{user_id}
 	]]>
 	</update>
+
+	<!-- 이전 비밀번호 확인 -->
+    <select id="getPassword" parameterType="String" resultType="String">
+	<![CDATA[
+	SELECT user_pw
+	FROM tb_user
+	WHERE user_id = #{user_id}
+	]]>
+	</select>
+
+	<!-- 프로필 정보 수정 -->
+	<update id="updateProfile" parameterType="KALOG01VO">
+	<![CDATA[
+	UPDATE tb_user
+	SET solution = #{solution}, dept = #{dept}, user_type = #{user_type}
+	WHERE user_id = #{user_id}
+	]]>
+	</update>
+
+	<!-- 프로필 이미지 base64 저장 -->
+	<update id="insertImage" parameterType="KAPRM01DTO">
+	<![CDATA[
+	UPDATE tb_user
+	SET profile_image = #{base64_image}
+	WHERE user_id = #{user_id}
+	]]>
+	</update>
+
+	<!-- 프로필 이미지 조회 -->
+	<select id="selectImage" parameterType="String" resultType="String">
+	<![CDATA[
+	SELECT profile_image
+	FROM tb_user
+	WHERE user_id = #{user_id}
+	]]>
+	</select>
+
+	<!-- 월별 지식 포인트 조회 -->
+	<select id="selectMonthPoint" parameterType="KAPRM02DTO" resultType="KAPRM01VO">
+	<![CDATA[
+	SELECT to_char(p.reg_date, 'YYYY-MM-DD') "reg_date" ,c.code_type "code_value", p.point_value "point_value", aq.title "title"
+	FROM tb_point p
+	left JOIN tb_code c
+	ON p.act_code = c.code_id
+	left join
+	(
+	SELECT ta.answer_id "id", ta.title "title" from tb_answer ta
+	union
+	SELECT tq.question_id, tq.title from tb_question tq
+	) as aq
+	on p.post_id = aq.id
+	WHERE user_id = #{user_id}
+	and p.reg_date
+	between to_timestamp(concat(#{start_date},' 00:00:00'), 'YYYY-MM-DD HH24:MI:SS.MS') 
+	and to_timestamp(concat(#{end_date},' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS.MS')
+	]]>
+	</select>
+
+	<!-- 총 누적 지식 포인트 조회 -->
+	<select id="selectTotalPoint" parameterType="String"  resultType= ="int">
+	<![CDATA[
+	select sum(point_value) as total_point
+	from tb_point
+	where user_id = #{user_id}
+	]]>
+	</select>
+
+	<!-- 이달 누적 지식 포인트 조회 -->
+	<select id="" parameterType="KAPRM02DTO" resultType="int">
+	<![CDATA[
+	select sum(point_value) as total_point
+	from tb_point
+	where user_id = #{user_id}
+	and to_char(reg_date, 'MM') = #{month}
+	]]>
+	</select>
 </mapper>

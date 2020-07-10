@@ -1,6 +1,7 @@
 package com.izt.log;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 /*
  * ------------------------------------------------------
@@ -73,7 +76,14 @@ public class KALOG01Controller {
             return  new ResponseEntity<>("아이디 중복",  HttpStatus.valueOf(405));
         }
         return new ResponseEntity<>("아이디 중복 없음",  HttpStatus.valueOf(200));
-
     }
+
+    // 솔루션 목록 확인
+    @GetMapping(value="getSolution")
+    public List<Map<String,String>> getSolution() {
+        
+        return KALOG01Service.getSolution();
+    }
+    
 
 }

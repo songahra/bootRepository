@@ -97,4 +97,19 @@
 	WHERE user_id = #{user_id}
 	]]>
 	</select>
+
+	<!-- get 솔루션 목록  -->
+	<select id="getSolution" resultMap="selectMapList">
+	<![CDATA[
+	SELECT code_id, code_content
+	FROM tb_code
+	WHERE code_name = 'SOLUTION' AND code_id >='SL010000'
+	]]>
+	</select>
+
+	<resultMap type="map" id="selectMapList">
+	<result column="code_id" property="codeId"/>
+	<result column="code_content" property="codeContent"/>
+	</resultMap>
+
 </mapper>

@@ -15,7 +15,7 @@ public class KALOG01VO {
 	private String login_cnt;
 	private String login_lock;
 	private String use_yn;
-	private MultipartFile[] profile_image;
+	private MultipartFile profile_image;
 	private String solution;
 	private String dept;
 
@@ -85,10 +85,10 @@ public class KALOG01VO {
 	public void setUse_yn(String use_yn) {
 		this.use_yn = use_yn;
 	}
-	public MultipartFile[] getProfile_image() {
+	public MultipartFile getProfile_image() {
 		return profile_image;
 	}
-	public void setProfile_image(MultipartFile[] profile_image) {
+	public void setProfile_image(MultipartFile profile_image) {
 		this.profile_image = profile_image;
 	}
 	public String getSolution() {
