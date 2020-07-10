@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KAADM04">
+	
+	<select id="getSolList" parameterType="map" resultType="KAADM04VO">
+	<![CDATA[
+		select 
+			(select tc.code_content from tb_code tc where tc.code_id = tp.solution_id) as "solution",
+			(select count(*) from tb_point tp2 where tp2.post_type = 'Q' and tp2.solution_id = tp.solution_id ) as "question",
+			(select count(*) from tb_point tp2 where tp2.post_type = 'A' and tp2.solution_id = tp.solution_id ) as "answer",
+			(select count(tq2.question_id ) - count(tq2.answer_id ) from tb_question tq2 where tq2.solution_id = tp.solution_id ) as "notSuccess",
+			(select count(tq3.score ) from tb_question tq3 where tq3.solution_id = tp.solution_id and tq3.score is not null ) as "scoreCount",
+			to_char(avg(tb_qa.score), 'FM9.0') as "avgScore",
+			concat(to_char(AVG(tb_qa.tadate - tb_qa.tqdate), 'DD'), ' 일') as "dueDate",
+			(select sum(tp3.point_value ) from tb_point tp3 where tp3.solution_id = tp.solution_id ) as "point"
+		from 
+			tb_point tp 
+		join
+			(select 
+				ta.reg_date as "tadate",
+				tq.reg_date as "tqdate",
+				tq.score as "score",
+				tq.solution_id as "solution"
+			from tb_question tq 
+			left join tb_answer ta 
+			on tq.answer_id = ta.answer_id) as TB_QA
+		on TB_QA.SOLUTION = TP.solution_id 
+		where 1=1
+	]]>
+	<if test="(sDate != null and sDate != '') and (eDate != null and eDate != '')">
+		<![CDATA[
+			and tp.reg_date between to_timestamp(concat(#{sDate},' 00:00:00'), 'YYYY-MM-DD HH24:MI:SS.MS') 
+                                and to_timestamp(concat(#{eDate},' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS.MS')
+		]]>
+	</if>
+	<!-- <if test="(sDate == null or sDate == '') and (eDate != null or eDate != '')">
+		<![CDATA[
+			and tp.reg_date < to_timestamp(concat(#{eDate},' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS.MS')
+		]]>
+	</if> -->
+	<![CDATA[
+		group by TP.solution_id
+	]]>
+	</select>
+
+	<select id="getUserList" parameterType="map" resultType="KAADM04VO">
+	<![CDATA[
+		select 
+			(select tu.user_name from tb_user tu where tu.user_id = tp.user_id ) as "userName",
+			(select tu.user_id from tb_user tu where tu.user_id = tp.user_id ) as "user_id",
+			(select count(*) from tb_point tp3 where tp3.post_type = 'Q' and tp3.user_id = tp.user_id ) as "question",
+			(select count(*) from tb_point tp4 where tp4.post_type = 'A' and tp4.user_id = tp.user_id ) as "answer",
+			(select count(*) from tb_question tq2 where tq2.reg_userid = tp.user_id and tq2.score is not null) as "scoreCount",
+			to_CHAR(avg(tb_up.p_score), 'FM9.0') as "avgScore",
+			(select SUM(tp5.point_value) from tb_point tp5 where tp5.user_id = tp.user_id group by tp5.user_id) as "point"
+		from tb_point tp 
+		left join 
+			(select 
+				ta.reg_userid as userid, 
+				foo.s as p_score
+			from tb_answer ta 
+			inner join 
+				(select 
+					tq.answer_id as a ,
+					tq.score as s
+					from tb_question tq 
+					where tq.score is not null
+				)as foo
+			on foo.a = ta.answer_id 
+			) as tb_up
+		on tb_up.userid = tp.user_id  
+		where 1=1
+	]]>
+	<if test="(sDate != null and sDate != '') and (eDate != null and eDate != '')">
+		<![CDATA[
+			and tp.reg_date between to_timestamp(concat(#{sDate},' 00:00:00'), 'YYYY-MM-DD HH24:MI:SS.MS') 
+                            	and to_timestamp(concat(#{eDate},' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS.MS')
+		]]>
+	</if>
+	<![CDATA[
+		group by tp.user_id
+		order by TP.user_id
+	]]>
+	</select>
+
+	<select id="getPointSearchSolA" parameterType="map" resultType="KAADM04VO">
+		<![CDATA[
+			select 
+				to_char(tp.reg_date, 'yyyy-mm-dd HH24:mi')  as "dueDate",
+				TC.code_type as "action",
+				TU.user_name as "userName",
+				tp.point_value as "point",
+				(select tc.code_content from tb_code tc where tc.code_content = #{sol} ) as "solution",
+				(select ta.title from tb_answer ta where ta.answer_id = tp.post_id ) as "title"
+			from tb_point tp 
+			left join tb_code TC
+			on TC.code_id = TP.act_code 
+			left join tb_user TU
+			on TU.user_id = TP.user_id 
+			where 1=1
+			  and tp.solution_id = (select tc2.code_id from tb_code tc2 where tc2.code_content = #{sol}) 
+			  and tp.post_type = 'A' 
+		]]>
+		<if test="(sDate != null and sDate != '') and (eDate != null and eDate != '')">
+          <![CDATA[
+              and tp.reg_date between to_timestamp(concat(#{sDate},' 00:00:00'), 'YYYY-MM-DD HH24:MI:SS.MS') 
+                                  and to_timestamp(concat(#{eDate},' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS.MS')
+          ]]>
+        </if> 
+		<!-- <if test="sDate != null or sDate != '') and (eDate != not null)">
+		  <![CDATA[
+		  	and reg_date > 
+		  ]]>]
+		</if> -->
+	</select>
+
+	<select id="getPointSearchSolQ" parameterType="KAADM04VO" resultType="KAADM04VO">
+		<![CDATA[
+			select 
+				to_char(tp.reg_date, 'yyyy-mm-dd HH24:mi')  as "dueDate",
+				TC.code_type as "action",
+				TU.user_name as "userName",
+				tp.point_value as "point",
+				(select tc.code_content from tb_code tc where tc.code_content = #{sol} ) as "solution",
+				(select tq.title from tb_question tq where tq.question_id = tp.post_id ) as "title"
+			from tb_point tp 
+			left join tb_code TC
+			on TC.code_id = TP.act_code 
+			left join tb_user TU
+			on TU.user_id = TP.user_id 
+			where 1=1
+			  and tp.solution_id = (select tc2.code_id from tb_code tc2 where tc2.code_content = #{sol}) 
+			  and tp.post_type = 'Q' 
+		]]>
+		<if test="(sDate != null and sDate != '') and (eDate != null and eDate != '')">
+			<![CDATA[
+				and tp.reg_date between to_timestamp(concat(#{sDate},' 00:00:00'), 'YYYY-MM-DD HH24:MI:SS.MS') 
+                                    and to_timestamp(concat(#{eDate},' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS.MS')
+			]]>
+		</if>
+	</select>
+
+	<select id="getPointSearchSolNS" parameterType="KAADM04VO" resultType="KAADM04VO">
+		<![CDATA[
+			select 
+				to_char(tp.reg_date, 'yyyy-mm-dd HH24:mi')  as "dueDate",
+				TC.code_type as "action",
+				TU.user_name as "userName",
+				tp.point_value as "point",
+				(select tc.code_content from tb_code tc where tc.code_content = #{sol} ) as "solution",
+				(select tq.title from tb_question tq where tq.question_id = tp.post_id ) as "title"
+			from tb_point tp 
+			left join tb_code TC
+			on TC.code_id = TP.act_code 
+			left join tb_user TU
+			on TU.user_id = TP.user_id 
+			left join tb_question tq
+			on tq.question_id = tp.post_id 
+			where tp.solution_id = (select tc2.code_id from tb_code tc2 where tc2.code_content = #{sol}) 
+				and tp.post_type = 'Q' 
+				and tq.answer_id is null
+		]]>
+		<if test="(sDate != null and sDate != '') and (eDate != null and eDate != '')">
+			<![CDATA[
+				and tp.reg_date between to_timestamp(concat(#{sDate},' 00:00:00'), 'YYYY-MM-DD HH24:MI:SS.MS') 
+									and to_timestamp(concat(#{eDate},' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS.MS')
+			]]>
+		</if>
+	</select>
+
+
+
+
+	<select id="getPointSearchUserA" parameterType="KAADM04VO" resultType="KAADM04VO">
+		<![CDATA[
+			select 
+				to_char(tp.reg_date, 'yyyy.mm.dd HH24:mi')  as "dueDate",
+				TC.code_type as "action",
+				TU.user_name as "userName",
+				tp.point_value as "point",
+				(select tc.code_content from tb_code tc where tc.code_id = tp.solution_id ) as "solution",
+				(select ta.title from tb_answer ta where ta.answer_id = tp.post_id ) as "title"
+			from tb_point tp 
+			left join tb_code TC
+			on TC.code_id = TP.act_code 
+			left join tb_user TU
+			on TU.user_id = TP.user_id 
+			where 1=1
+			  and tp.user_id = #{uId} 
+			  and tp.post_type = 'A' 
+		]]>
+		<if test="(sDate != null and sDate != '') and (eDate != null and eDate != '')">
+			<![CDATA[
+				and tp.reg_date between to_timestamp(concat(#{sDate},' 00:00:00'), 'YYYY-MM-DD HH24:MI:SS.MS') 
+									and to_timestamp(concat(#{eDate},' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS.MS')
+			]]>
+		</if>
+	</select>
+	<select id="getPointSearchUserQ" parameterType="KAADM04VO" resultType="KAADM04VO">
+		<![CDATA[
+			select 
+				to_char(tp.reg_date, 'yyyy.mm.dd HH24:mi')  as "dueDate",
+				TC.code_type as "action",
+				TU.user_name as "userName",
+				tp.point_value as "point",
+				(select tc.code_content from tb_code tc where tc.code_id = tp.solution_id ) as "solution",
+				(select tq.title from tb_question tq where tq.question_id = tp.post_id ) as "title"
+			from tb_point tp 
+			left join tb_code TC
+			on TC.code_id = TP.act_code 
+			left join tb_user TU
+			on TU.user_id = TP.user_id 
+			where 1=1
+			  and tp.user_id = #{uId} 
+			  and tp.post_type = 'Q' 
+		]]>
+		<if test="(sDate != null and sDate != '') and (eDate != null and eDate != '')">
+			<![CDATA[
+				and tp.reg_date between to_timestamp(concat(#{sDate},' 00:00:00'), 'YYYY-MM-DD HH24:MI:SS.MS') 
+									and to_timestamp(concat(#{eDate},' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS.MS')
+			]]>
+		</if>
+	</select>
+	<select id="getPointSearchUserSC" parameterType="KAADM04VO" resultType="KAADM04VO">
+
+	</select>
+
+</mapper>

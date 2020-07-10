@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KAKNM02">
+   <select id="getList" parameterType="map" resultType="KAKNM02VO">
+      <![CDATA[
+            /* yes knm/KAKNM02_SQL.xml - getList */
+          select 
+               (select tc.code_content from tb_code tc where tc.code_id = tq.solution_id ) as solution_code,
+               tq.title as title,
+               (select tu.user_name from tb_user tu where tu.user_id = tq.reg_userid) as reg_userid_tq,
+               to_char(tq.reg_date ,'yyyy-mm-dd hh24:mi') reg_date_tq,
+               (select tu.user_name from tb_user tu where tu.user_id = ta.reg_userid) as reg_userid_ta,
+               to_char(ta.reg_date, 'yyyy-mm-dd hh24:mi') as reg_date_ta,
+               ta.reg_date - tq.reg_date as term ,
+               (case when tq.status = 'SS' then '완료'
+                     when tq.status = 'RQ' then '재질문' 
+                     when tq.status = 'NN' then '미완료' end) as status
+          from tb_answer ta 
+          left join tb_question tq
+          on tq.answer_id = ta.answer_id
+          where 1=1
+            and ta.reg_userid = #{reg_userid}
+      ]]>   
+          <if test="title != null and title != ''">
+          <![CDATA[
+               AND tq.title like '%'||#{title}||'%'
+          ]]>
+          </if> 
+          <if test="status != null and status != ''">
+          <![CDATA[
+               AND tq.status = #{status}
+          ]]>
+          </if>    
+          <![CDATA[ 
+             ORDER BY reg_date_tq 
+          ]]>
+   </select>
+
+</mapper>
