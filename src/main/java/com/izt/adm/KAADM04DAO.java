@@ -48,10 +48,10 @@ public class KAADM04DAO {
         map.put("eDate", eDate);
         System.out.println("map " + map);
 
-        if(type.equals("a")){
+        if(type.equals("answer")){
             System.out.println("if(a) 문 들어왔어 ");
             return sqlSession.selectList("KAADM04.getPointSearchSolA", map);
-        }else if(type.equals("q")){
+        }else if(type.equals("question")){
             System.out.println("if(q) 문 들어왔어 ");
             return sqlSession.selectList("KAADM04.getPointSearchSolQ", map);
         }else {
@@ -69,10 +69,10 @@ public class KAADM04DAO {
         map.put("sDate", sDate);
         map.put("eDate", eDate);
 
-        if(type.equals("a")){
+        if(type.equals("answer")){
             System.out.println("<< USER >> if(a) 문 들어왔어 ");
             return sqlSession.selectList("KAADM04.getPointSearchUserA", map);
-        } else if(type.equals("q")){
+        } else if(type.equals("question")){
             System.out.println("<< USER >> if(q) 문 들어왔어 ");
             return sqlSession.selectList("KAADM04.getPointSearchUserQ", map);
         } else {

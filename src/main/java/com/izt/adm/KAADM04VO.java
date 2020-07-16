@@ -24,12 +24,19 @@ public class KAADM04VO {
     private String dueDate;
     private String point;
 	private String userName;
+	private String userDept;
 
 	private String action;
 	private String title;
 
 
 
+	public String getUserDept(){
+		return userDept;
+	}
+	public void setUserDept(String userDept){
+		this.userDept=userDept;
+	}
 	public String getAvgScore(){
 		return avgScore;
 	}
@@ -126,6 +133,6 @@ public class KAADM04VO {
 		return "Practice02 [user_id=" + user_id + ", point_type=" + point_type + ", period=" + period + ", solution="
 				+ solution + ", question=" + question + ", answer=" + answer + ", notSuccess=" + notSuccess + ", score="
 				+ score + ", scoreCount=" + scoreCount + ", dueDate=" + dueDate + ", point=" + point + ", userName="
-				+ userName + ", action=" + action + ", title=" + title + ", avgScore=" + avgScore + "]";
+				+ userName + ", action=" + action + ", title=" + title + ", avgScore=" + avgScore + ", userDept=" + userDept + "]";
 	}
 }

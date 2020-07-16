@@ -37,4 +37,37 @@
           ]]>
    </select>
 
+   <select id="postWrite" parameterType="KAKNM02VO">
+      <![CDATA[
+         with INST1 as (
+            insert into TB_ANSWER (ANSWER_ID, REG_USERID, TITLE, "content" , content_basis)
+               values (#{answer_id},
+                       #{reg_userid},
+                       #{title},
+                       #{content_a},
+                       #{content_b})
+               returning (ANSWER_ID, REG_USERID)
+         ), INST2 as (
+            insert into TB_POINT (POINT_ID, user_id, POINT_VALUE, ACT_CODE, POST_TYPE, POST_ID, SOLUTION_ID)
+                  values (CONCAT('PO', TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDDHH24MISSMS')),
+                        #{reg_userid}, 
+                        (select to_number(TC.code_content, '9') from tb_code tc where TC.code_id = 'PA030000'), 
+                        'PA030000', 
+                        'A', 
+                        #{answer_id},
+                        #{solution_id})
+         ) update TB_QUESTION set answer_id = #{answer_id}, STATUS = 'SS' where question_id = #{question_id};
+      ]]>
+   </select>
+   <select id="postTag" parameterType="KAKNM02VO">
+      <![CDATA[
+         insert into TB_TAG (TAG_ID, POST_TYPE, POST_ID, TAG_TYPE, TAG_VALUE)
+         values (#{tag_id},
+                'A',
+                #{answer_id},
+                'TAG',
+                #{content_t})
+      ]]>
+   </select>
+   
 </mapper>

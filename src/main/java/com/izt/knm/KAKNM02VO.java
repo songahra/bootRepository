@@ -18,6 +18,11 @@ public class KAKNM02VO {
    private String reg_date;
    private String update_date;
    private String title;
+   private String content_a;
+   private String content_b;
+   private String content_t;
+   private String tag_id;
+   private String solution_id;
 
    // update (tb_question)
    private String question_id;
@@ -35,8 +40,7 @@ public class KAKNM02VO {
    private String reg_userid_ta;
    private String term;
 
-
-   public String getAnswer_id() {
+   	public String getAnswer_id() {
 		return answer_id;
 	}
 	public void setAnswer_id(String answer_id) {
@@ -71,6 +75,36 @@ public class KAKNM02VO {
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	public String getContent_a() {
+		return content_a;
+	}
+	public void setContent_a(String content_a) {
+		this.content_a = content_a;
+	}
+	public String getContent_b() {
+		return content_b;
+	}
+	public void setContent_b(String content_b) {
+		this.content_b = content_b;
+	}
+	public String getContent_t() {
+		return content_t;
+	}
+	public void setContent_t(String content_t) {
+		this.content_t = content_t;
+	}
+	public String getTag_id() {
+		return tag_id;
+	}
+	public void setTag_id(String tag_id) {
+		this.tag_id = tag_id;
+	}
+	public String getSolution_id() {
+		return solution_id;
+	}
+	public void setSolution_id(String solution_id) {
+		this.solution_id = solution_id;
 	}
 	public String getQuestion_id() {
 		return question_id;
@@ -132,13 +166,18 @@ public class KAKNM02VO {
 	public void setTerm(String term) {
 		this.term = term;
 	}
+
+
 	@Override
 	public String toString() {
-		return "Practice02 [answer_id=" + answer_id + ", reg_userid=" + reg_userid + ", update_userid=" + update_userid
-				+ ", reg_date=" + reg_date + ", update_date=" + update_date + ", title=" + title + ", question_id="
-				+ question_id + ", display_yn=" + display_yn + ", hit=" + hit + ", status=" + status
-				+ ", solution_code=" + solution_code + ", reg_date_tq=" + reg_date_tq + ", reg_date_ta=" + reg_date_ta
-				+ ", reg_userid_tq=" + reg_userid_tq + ", reg_userid_ta=" + reg_userid_ta + ", term=" + term + "]";
+		return "Practice [answer_id=" + answer_id + ", reg_userid=" + reg_userid + ", update_userid=" + update_userid
+				+ ", reg_date=" + reg_date + ", update_date=" + update_date + ", title=" + title + ", content_a="
+				+ content_a + ", content_b=" + content_b + ", content_t=" + content_t + ", tag_id=" + tag_id
+				+ ", solution_id=" + solution_id + ", question_id=" + question_id + ", display_yn=" + display_yn
+				+ ", hit=" + hit + ", status=" + status + ", solution_code=" + solution_code + ", reg_date_tq="
+				+ reg_date_tq + ", reg_date_ta=" + reg_date_ta + ", reg_userid_tq=" + reg_userid_tq + ", reg_userid_ta="
+				+ reg_userid_ta + ", term=" + term + "]";
 	}
-    
+	
+	
 }

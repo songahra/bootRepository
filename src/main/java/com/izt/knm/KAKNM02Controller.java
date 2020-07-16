@@ -9,6 +9,7 @@
  */
 package com.izt.knm;
 
+import java.io.Console;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,9 @@ public class KAKNM02Controller {
 
     // 답변 작성
     @PostMapping(value = "write")
-    public String write(@RequestBody KAKNM02VO KAKNM02VO) {
-        KAKNM02Service.postWrite(KAKNM02VO);
-        return "/write";
+    public int write(@RequestBody KAKNM02VO kAKNM02VO) {
+        System.out.println("KAKNM02Controller << write >> called...");
+        return KAKNM02Service.postWrite(kAKNM02VO);
     }
 
     @GetMapping(value = "getList")
