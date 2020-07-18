@@ -16,7 +16,7 @@ public class KAKNM01VO {
 	private String answer_id;
 	private String reg_userid;
 	private String update_userid;
-	private String solution_code;
+	private String solution_id;
 	private String title;
 	private String content_q;
 	private String content_s;
@@ -32,8 +32,10 @@ public class KAKNM01VO {
 	private String rowNum;
 	private String userid;
 	private String tag;
+	private String reg_userName_tq;
 	private String reg_userid_tq;
 	private String reg_date_tq;
+	private String reg_userName_ta;
 	private String reg_userid_ta;
 	private String reg_date_ta;
 	private String tag_tag;
@@ -41,7 +43,7 @@ public class KAKNM01VO {
 	private String tag_ert;
 	private String sortType;
 	private String term;
-	private String solution_id;
+	private String solution_name;
 	private String flag;
 
 	// 프로젝트 조회
@@ -55,8 +57,8 @@ public class KAKNM01VO {
 	private String post_id;
 	private String tag_type;
 	private String tag_value;
-
-
+	private String tag_id;
+	 
 	public String getQuestion_id() {
 		return question_id;
 	}
@@ -93,11 +95,11 @@ public class KAKNM01VO {
 	public void setUpdate_userid(String update_userid) {
 		this.update_userid = update_userid;
 	}
-	public String getSolution_code() {
-		return solution_code;
+	public String getSolution_id() {
+		return solution_id;
 	}
-	public void setSolution_code(String solution_code) {
-		this.solution_code = solution_code;
+	public void setSolution_id(String solution_id) {
+		this.solution_id = solution_id;
 	}
 	public String getTitle() {
 		return title;
@@ -177,6 +179,12 @@ public class KAKNM01VO {
 	public void setTag(String tag) {
 		this.tag = tag;
 	}
+	public String getReg_userName_tq() {
+		return reg_userName_tq;
+	}
+	public void setReg_userName_tq(String reg_userName_tq) {
+		this.reg_userName_tq = reg_userName_tq;
+	}
 	public String getReg_userid_tq() {
 		return reg_userid_tq;
 	}
@@ -188,6 +196,12 @@ public class KAKNM01VO {
 	}
 	public void setReg_date_tq(String reg_date_tq) {
 		this.reg_date_tq = reg_date_tq;
+	}
+	public String getReg_userName_ta() {
+		return reg_userName_ta;
+	}
+	public void setReg_userName_ta(String reg_userName_ta) {
+		this.reg_userName_ta = reg_userName_ta;
 	}
 	public String getReg_userid_ta() {
 		return reg_userid_ta;
@@ -231,11 +245,11 @@ public class KAKNM01VO {
 	public void setTerm(String term) {
 		this.term = term;
 	}
-	public String getSolution_id() {
-		return solution_id;
+	public String getSolution_name() {
+		return solution_name;
 	}
-	public void setSolution_id(String solution_id) {
-		this.solution_id = solution_id;
+	public void setSolution_name(String solution_name) {
+		this.solution_name = solution_name;
 	}
 	public String getFlag() {
 		return flag;
@@ -291,37 +305,27 @@ public class KAKNM01VO {
 	public void setTag_value(String tag_value) {
 		this.tag_value = tag_value;
 	}
-
+	public String getTag_id() {
+		return tag_id;
+	}
+	public void setTag_id(String tag_id) {
+		this.tag_id = tag_id;
+	}
 	@Override
 	public String toString() {
 		return "dd [question_id=" + question_id + ", requestion_id=" + requestion_id + ", project_id=" + project_id
 				+ ", answer_id=" + answer_id + ", reg_userid=" + reg_userid + ", update_userid=" + update_userid
-				+ ", solution_code=" + solution_code + ", title=" + title + ", content_q=" + content_q + ", content_s="
+				+ ", solution_id=" + solution_id + ", title=" + title + ", content_q=" + content_q + ", content_s="
 				+ content_s + ", err_log=" + err_log + ", reg_date=" + reg_date + ", update_date=" + update_date
 				+ ", score=" + score + ", status=" + status + ", hit=" + hit + ", display_yn=" + display_yn
-				+ ", rowNum=" + rowNum + ", userid=" + userid + ", tag=" + tag + ", reg_userid_tq=" + reg_userid_tq
-				+ ", reg_date_tq=" + reg_date_tq + ", reg_userid_ta=" + reg_userid_ta + ", reg_date_ta=" + reg_date_ta
-				+ ", tag_tag=" + tag_tag + ", tag_erc=" + tag_erc + ", tag_ert=" + tag_ert + ", sortType=" + sortType
-				+ ", term=" + term + ", solution_id=" + solution_id + ", flag=" + flag + ", project_name="
-				+ project_name + ", customer=" + customer + ", reg_date_st=" + reg_date_st + ", reg_date_ed="
-				+ reg_date_ed + ", post_type=" + post_type + ", post_id=" + post_id + ", tag_type=" + tag_type
-				+ ", tag_value=" + tag_value + ", getQuestion_id()=" + getQuestion_id() + ", getRequestion_id()="
-				+ getRequestion_id() + ", getProject_id()=" + getProject_id() + ", getAnswer_id()=" + getAnswer_id()
-				+ ", getReg_userid()=" + getReg_userid() + ", getUpdate_userid()=" + getUpdate_userid()
-				+ ", getSolution_code()=" + getSolution_code() + ", getTitle()=" + getTitle() + ", getContent_q()="
-				+ getContent_q() + ", getContent_s()=" + getContent_s() + ", getErr_log()=" + getErr_log()
-				+ ", getReg_date()=" + getReg_date() + ", getUpdate_date()=" + getUpdate_date() + ", getScore()="
-				+ getScore() + ", getStatus()=" + getStatus() + ", getHit()=" + getHit() + ", getDisplay_yn()="
-				+ getDisplay_yn() + ", getRowNum()=" + getRowNum() + ", getUserid()=" + getUserid() + ", getTag()="
-				+ getTag() + ", getReg_userid_tq()=" + getReg_userid_tq() + ", getReg_date_tq()=" + getReg_date_tq()
-				+ ", getReg_userid_ta()=" + getReg_userid_ta() + ", getReg_date_ta()=" + getReg_date_ta()
-				+ ", getTag_tag()=" + getTag_tag() + ", getTag_erc()=" + getTag_erc() + ", getTag_ert()=" + getTag_ert()
-				+ ", getSortType()=" + getSortType() + ", getTerm()=" + getTerm() + ", getSolution_id()="
-				+ getSolution_id() + ", getFlag()=" + getFlag() + ", getProject_name()=" + getProject_name()
-				+ ", getCustomer()=" + getCustomer() + ", getReg_date_st()=" + getReg_date_st() + ", getReg_date_ed()="
-				+ getReg_date_ed() + ", getPost_type()=" + getPost_type() + ", getPost_id()=" + getPost_id()
-				+ ", getTag_type()=" + getTag_type() + ", getTag_value()=" + getTag_value() + ", getClass()="
-				+ getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString() + "]";
+				+ ", rowNum=" + rowNum + ", userid=" + userid + ", tag=" + tag + ", reg_userName_tq=" + reg_userName_tq
+				+ ", reg_userid_tq=" + reg_userid_tq + ", reg_date_tq=" + reg_date_tq + ", reg_userName_ta="
+				+ reg_userName_ta + ", reg_userid_ta=" + reg_userid_ta + ", reg_date_ta=" + reg_date_ta + ", tag_tag="
+				+ tag_tag + ", tag_erc=" + tag_erc + ", tag_ert=" + tag_ert + ", sortType=" + sortType + ", term="
+				+ term + ", solution_name=" + solution_name + ", flag=" + flag + ", project_name=" + project_name
+				+ ", customer=" + customer + ", reg_date_st=" + reg_date_st + ", reg_date_ed=" + reg_date_ed
+				+ ", post_type=" + post_type + ", post_id=" + post_id + ", tag_type=" + tag_type + ", tag_value="
+				+ tag_value + ", tag_id=" + tag_id +"]";
 	}
 }
 

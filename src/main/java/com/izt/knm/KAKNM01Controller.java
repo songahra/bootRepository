@@ -38,10 +38,10 @@ public class KAKNM01Controller {
     */
     @GetMapping(value="mainList")
     public List<KAKNM01VO> main() throws Exception {
-        System.out.println("KAKNM01Controller Controller main Method called..");
+        System.out.println("KAKNM01Controller main Method called..");
         
         List<KAKNM01VO> list = kAKNM01Service.mainList();
-        System.out.println("Main list : " + list.toString());
+        // System.out.println("Main list : " + list.toString());
         return list;
     }
 
@@ -59,9 +59,33 @@ public class KAKNM01Controller {
         System.out.println("get list : " + list.toString());
         return list;
     }
+    
+     /**
+    * 지식관리 기술문의 상세보기
+    * @param String
+    * @return KAKNM01VO
+    * @exception 
+    */
+    @GetMapping(value="getDetail")
+    public KAKNM01VO getDetail(@RequestParam(value="reg_userid") String reg_userid,
+                               @RequestParam(value="question_id") String question_id){
+        System.out.println("KAKNM01Controller getDetail Method called..");
+        System.out.println("reg_userid : " + reg_userid);
+        System.out.println("question_id : " + question_id);
+
+        Map<String,Object> paramMap = new HashMap<String,Object>();
+        paramMap.put("reg_userid", reg_userid);
+        paramMap.put("question_id", question_id);
+
+        KAKNM01VO kAKNM01VO = kAKNM01Service.getDetail(paramMap);     
+
+        System.out.println("kAKNM01VO =>=> "+ kAKNM01VO);
+        
+        return kAKNM01VO;
+    }
 
     /**
-    * 지식관리 질문 등록/삭제/수정
+    * 지식관리 기술문의 질문 등록/삭제/수정
     * @param KAKNM01VO
     * @return void
     * @exception 
@@ -89,7 +113,7 @@ public class KAKNM01Controller {
     }
 
     /**
-    * 내가 문의한 질문 메인화면
+    * 지식관리 내가 문의한 질문 메인화면
     * @param String
     * @return List<KAKNM01VO>
     * @exception 
@@ -105,20 +129,20 @@ public class KAKNM01Controller {
     }
 
     /**
-    * 내가 문의한 질문 조회 화면
+    * 지식관리 내가 문의한 질문 조회 화면
     * @param String
     * @return void
     * @exception 
     */
     @GetMapping(value="srchMyList")
-    public List<KAKNM01VO> srchMyList(@RequestParam(value="userId") String userId,
+    public List<KAKNM01VO> srchMyList(@RequestParam(value="userid") String userid,
                                       @RequestParam(value="title") String title, 
                                       @RequestParam(value="status") String status){
         System.out.println("KAKNM01Controller getMyList Method called..");
-        System.out.println("userId : " + userId + "title : " + title);
+        System.out.println("userid : " + userid + "title : " + title);
         
         Map<String,Object> paramMap = new HashMap<String,Object>();
-        paramMap.put("userId", userId);
+        paramMap.put("userid", userid);
         paramMap.put("title", title);
         paramMap.put("status", status);
         
@@ -130,7 +154,7 @@ public class KAKNM01Controller {
     }
 
     /**
-    * 지식관리 질문 등록화면에서 Project List 조회화면
+    * 지식관리 질문 등록화면에서 Project List 화면
     * @param KAKNM01VO
     * @return List<KAKNM01VO>
     * @exception 
@@ -143,7 +167,7 @@ public class KAKNM01Controller {
     }
 
     /**
-    * 지식관리 프로젝트 리스트 조건조회 화면
+    * 지식관리 프로젝트 리스트 조회 화면
     * @param String
     * @return List<KAKNM01VO>
     * @exception 

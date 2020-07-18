@@ -5,19 +5,19 @@
 	
 	<select id="getAllList" resultType="KAKNM01VO">
 		<![CDATA[
-            SELECT /* sdk knm/KAKNM01_SQL.xml - getAllList */
-                   (ROW_NUMBER() OVER()) AS rowNum
-                 , (select tc.code_content 
+            select /* sdk knm/KAKNM01_SQL.xml - getAllList - 지식관리 기술문의 메인 리스트 */
+                   /* (ROW_NUMBER() OVER()) AS rowNum */
+                   (select tc.code_content 
                       from tb_code tc 
-                     where tc.code_id = tq.solution_id ) AS solution_id 
+                     where tc.code_id = tq.solution_id ) AS solution_name 
                  , tq.title 
                  , (select tu.user_name 
                       from tb_user tu 
-                     where tu.user_id = tq.reg_userid ) AS reg_userid_tq
+                     where tu.user_id = tq.reg_userid ) AS reg_userName_tq
                  , tq.reg_date ::timestamp::date AS reg_date_tq
                  , (select tu.user_name 
                       from tb_user tu 
-                     where tu.user_id = ta.reg_userid ) AS reg_userid_ta
+                     where tu.user_id = ta.reg_userid ) AS reg_userName_ta
                  , ta.reg_date ::timestamp::date AS reg_date_ta
                  , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
                          then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
@@ -27,38 +27,42 @@
                  , (case when tq.status = 'SS' then '완료'
                          when tq.status = 'RQ' then '재질문' 
                          when tq.status = 'NN' then '미완료' end) AS status
-              FROM tb_question tq
-              LEFT JOIN tb_answer ta
-                ON tq.answer_id = ta.answer_id
-            /* order by tq.question_id */
+                 , tq.question_id
+                 , tq.reg_userid
+              from tb_question tq
+              left JOIN tb_answer ta
+                on tq.answer_id = ta.answer_id
+             where tq.display_yn ='Y'
+             order by tq.reg_date DESC
 		]]>
 	</select>
-
+    
     <select id="srchList" parameterType="KAKNM01VO" resultType="KAKNM01VO">
 		<![CDATA[
-            select /* sdk knm/KAKNM01_SQL.xml - srchList */
+            select /* sdk knm/KAKNM01_SQL.xml - srchList - 지식관리 기술문의 리스트 조회 */
                    (ROW_NUMBER() OVER()) AS rowNum
-                 , foo.solution_id
+                 , foo.solution_name
                  , foo.title
-                 , foo.reg_userid_tq
+                 , foo.reg_userName_tq
                  , foo.reg_date_tq
-                 , foo.reg_userid_ta
+                 , foo.reg_userName_ta
                  , foo.reg_date_ta
                  , foo.term
                  , foo.status
+                 , foo.question_id
               from tb_tag tt
              inner join 
            (select (select tc.code_content 
                       from tb_code tc 
-                     where tc.code_id = tq.solution_id ) as solution_id
+                     where tc.code_id = tq.solution_id ) as solution_name
                  , tq.title as title
                  , (select tu.user_name 
                       from tb_user tu 
-                     where tu.user_id = tq.reg_userid ) as reg_userid_tq
+                     where tu.user_id = tq.reg_userid ) as reg_userName_tq
                  , tq.reg_date as reg_date_tq 
                  , (select tu.user_name 
                       from tb_user tu 
-                     where tu.user_id = ta.reg_userid ) as  reg_userid_ta
+                     where tu.user_id = ta.reg_userid ) as  reg_userName_ta
                  , ta.reg_date as reg_date_ta 
                  , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
                          then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
@@ -71,7 +75,8 @@
               from tb_question tq
               left join tb_answer ta 
                 on tq.answer_id = ta.answer_id 
-             where 1=1
+             where tq.display_yn ='Y'   
+               and 1=1
           ]]>   
           <if test="title != null and title != ''">
           <![CDATA[
@@ -86,77 +91,105 @@
           <choose> 
           <when test="sortType = '1'"> 
           <![CDATA[
-               ORDER BY tq.reg_userid
+              order by tq.reg_userid
           ]]>
           </when>
           <when test="sortType = '2'"> 
           <![CDATA[
-               ORDER BY ta.reg_userid
+              order by ta.reg_userid
           ]]>
           </when>
           <when test="sortType = '3'"> 
           <![CDATA[     
-               ORDER BY term
+              order by term
           ]]>
           </when>
           <when test="sortType = '4'"> 
           <![CDATA[
-               ORDER BY tq.status
+              order by tq.status
           ]]>
           </when>
           <otherwise> 
           <![CDATA[
-               ORDER BY tq.reg_date desc 
+              order by tq.reg_date desc 
           ]]>
           </otherwise> 
           </choose>
           <![CDATA[
           ) as foo
              on tt.post_id = foo.question_id
-          WHERE 1=1
+          where 1=1
           ]]>
           <if test='tag_tag != "" and tag_tag != null '> 
           <![CDATA[
-		     AND tt.tag_type = 'TAG'
-               AND tt.tag_value = #{tag_tag}
+		     and tt.tag_type = 'TAG'
+               and tt.tag_value = #{tag_tag}
           ]]>
           </if>
           <if test='tag_erc != "" and tag_erc != null '> 
           <![CDATA[
-		     AND tt.tag_type = 'ERC'
-               AND tt.tag_value = #{tag_erc}
+		     and tt.tag_type = 'ERC'
+               and tt.tag_value = #{tag_erc}
           ]]>
           </if>
           <if test='tag_ert != "" and tag_ert != null '> 
           <![CDATA[
-		     AND tt.tag_type = 'ERT'
-               AND tt.tag_value = #{tag_ert}
+		     and tt.tag_type = 'ERT'
+               and tt.tag_value = #{tag_ert}
           ]]>
           </if>
 
 	</select>
 
-	<select id="selectListDetail" parameterType="KAKNM01VO" resultType="KAKNM01VO">
+	<select id="getDetail" parameterType="map" resultType="KAKNM01VO">
 		<![CDATA[
-			SELECT /* sdk knm/KALOG01_SQL.xml - selectListDetail */
-				  tq.question_id
-				, tq.requestion_id
-				, tq.project_id
-				, tq.answer_id
-				, tq.reg_userid
-				, tq.update_userid
-				, tq.title
-				, tq.score
-				, tq.status
-			  FROM tb_question tq
-		      WHERE tq.title = #{title}
-		      ORDER BY tq.reg_date desc
+           select distinct /* sdk knm/KAKNM01_SQL.xml - getDetail - 지식관리 질문상세보기 */
+                  (select tu.user_name 
+                     from tb_user tu 
+                    where tu.user_id = tq.reg_userid ) as reg_userName_tq   /* 작성자 */
+                 , tq.reg_date as reg_date_tq                               /* 질문 등록일 */ 
+                 , (select dept
+                      from tb_user tu
+                     where tu.user_id = tq.reg_userid) as reg_user_dept     /* 작성자 부서 */
+                 , tq.status                                                /* 상태  */
+                 , tq.score                                                 /* 점수 */
+                 , tq.project_id                                            /* 프로젝트 id */
+                 , tq.title                                                 /* 질문 제목 */
+                 , tq.content_q                                             /* 질문 내용 */
+                 , tq.content_s                                             /* 질문 환경 및 상황 */
+                 , tq.err_log                                               /* 오류로그 */
+                 , tq.solution_id                                           /* 솔루션id */
+                 , tq.question_id                                           /* 질문 id */
+                 , ta.answer_id                                             /* 답변 id */
+                 , (select tp.project_name                                  
+                      from tb_project tp 
+                     where tq.project_id = tp.project_id ) as project_name  /* 프로젝트 명 */
+                 , (select tc.code_content 
+                      from tb_code tc 
+                     where tq.solution_id = tc.code_id ) as solution_name   /* 솔루션 명 */
+                 , (select concat('#', string_agg(tt.tag_value, ' #')) 
+                      from tb_tag tt 
+                     where TT.post_id = #{question_id} 
+                       and TT.tag_type = 'TAG') as tag_tag                  /* 태그 */    
+                 , (select tt.tag_value 
+                      from tb_tag tt 
+                     where  TT.post_id = #{question_id}
+                       and TT.tag_type = 'ERC') as tag_erc                  /* 에러코드 */     
+                 , (select tt.tag_value
+                      from tb_tag tt 
+                     where TT.post_id = #{question_id}
+                       and TT.tag_type = 'ERT') as tag_ert                  /* 예외종류 */       
+              from tb_question tq 
+              left join tb_answer ta 
+                on tq.answer_id = ta.answer_id
+             where tq.question_id = #{question_id}
+               and tq.reg_userid = #{reg_userid} 
 		]]>
 	</select>
-
+     
      <select id="getPrList"  parameterType="map"  resultType="KAKNM01VO">
 		<![CDATA[
-            select /* sdk knm/KAKNM01_SQL.xml - getPrList */
+            select /* sdk knm/KAKNM01_SQL.xml - getPrList - 지식관리 프로젝트 리스트 */
                    project_id
                  , project_name
                  , customer
@@ -164,46 +197,136 @@
               from tb_project
 		]]>
 	</select>
-
+     
      <select id="srchPrList"  resultType="KAKNM01VO">
 		<![CDATA[
-            SELECT /* sdk knm/KAKNM01_SQL.xml - srchPrList */
+            select /* sdk knm/KAKNM01_SQL.xml - srchPrList - 지식관리 프로젝트 조회 리스트 */
                    project_id
                  , project_name
-                 , customer
                  , CONCAT(project_start_date, ' ~ ', project_end_date) as term
-              FROM tb_project
-             WHERE 1=1 
+              from tb_project
+             where 1=1 
 		]]>
           <if test='project_id != "" and project_id != null '> 
           <![CDATA[
-               AND project_id = #{project_id}
+               and project_id = #{project_id}
           ]]>
           </if>
           <if test='project_name != "" and project_name != null '> 
           <![CDATA[
-               AND project_name = #{project_name}
+               and project_name = #{project_name}
           ]]>
           </if>
           <if test='customer != "" and customer != null '> 
           <![CDATA[
-               AND customer = #{customer}
+               and customer = #{customer}
           ]]>
           </if>
 	</select>
      
      <select id="srchQuId"  parameterType="String" resultType="KAKNM01VO">
-		<![CDATA[ /* sdk knm/KAKNM01_SQL.xml - srchQuId */
-            SELECT max(#{question_id}) 
-              FROM tb_question
+		<![CDATA[ /* sdk knm/KAKNM01_SQL.xml - srchQuId - 지식관리 질문id 조회 */
+            select max(#{question_id}) 
+              from tb_question
 		]]>
+	</select>
+
+	<select id="getMyList" resultType="KAKNM01VO">
+		<![CDATA[
+            select /* sdk knm/KAKNM01_SQL.xml - getMyList - 지식관리 내가 문의한 질문 리스트 */
+                   (ROW_NUMBER() OVER()) AS rowNum
+                 , (select tc.code_content 
+                      from tb_code tc 
+                     where tc.code_id = tq.solution_id ) AS solution_name 
+                 , tq.title 
+                 , (select tu.user_name 
+                      from tb_user tu 
+                     where tu.user_id = tq.reg_userid ) AS reg_userName_tq
+                 , tq.reg_date ::timestamp::date AS reg_date_tq
+                 , (select tu.user_name 
+                      from tb_user tu 
+                     where tu.user_id = ta.reg_userid ) AS reg_userName_ta
+                 , ta.reg_date ::timestamp::date AS reg_date_ta
+                 , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
+                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
+                         when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') <= '00'
+                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'HH'), ' HOURS')
+                         else '--' end) AS term              
+                 , (case when tq.status = 'SS' then '완료'
+                         when tq.status = 'RQ' then '재질문' 
+                         when tq.status = 'NN' then '미완료' end) AS status
+                 , tq.question_id
+                 , tq.reg_userid
+              from tb_question tq
+              left join tb_answer ta
+                on tq.answer_id = ta.answer_id
+             where tq.display_yn ='Y'
+             order by tq.reg_date 
+               and 1=1
+		]]>
+          <if test='userid != "" and userid != null '> 
+          <![CDATA[
+               and tq.reg_userid = #{userid}
+          ]]>
+          </if>
+	</select>
+
+	<select id="srchMyList" resultType="KAKNM01VO">
+		<![CDATA[
+            select /* sdk knm/KAKNM01_SQL.xml - srchMyList - 지식관리 내가 문의한 질문 리스트 조건 조회 */
+                   (select tc.code_content 
+                      from tb_code tc 
+                     where tc.code_id = tq.solution_id ) AS solution_name 
+                 , tq.title 
+                 , (select tu.user_name 
+                      from tb_user tu 
+                     where tu.user_id = tq.reg_userid ) AS reg_userName_tq
+                 , tq.reg_date ::timestamp::date AS reg_date_tq
+                 , (select tu.user_name 
+                      from tb_user tu 
+                     where tu.user_id = ta.reg_userid ) AS reg_userName_ta
+                 , ta.reg_date ::timestamp::date AS reg_date_ta
+                 , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
+                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
+                         when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') <= '00'
+                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'HH'), ' HOURS')
+                         else '--' end) AS term              
+                 , (case when tq.status = 'SS' then '완료'
+                         when tq.status = 'RQ' then '재질문' 
+                         when tq.status = 'NN' then '미완료' end) AS status
+                 , tq.question_id
+                 , tq.reg_userid
+              from tb_question tq
+              left join tb_answer ta
+                on tq.answer_id = ta.answer_id
+             where tq.display_yn ='Y'
+               and 1=1
+		]]>
+          <if test='userid != "" and userid != null '> 
+          <![CDATA[
+               and tq.reg_userid = #{userid}
+          ]]>
+          </if>
+          <if test=' title!= "" and title != null '> 
+          <![CDATA[
+               and tq.title = #{title}
+          ]]>
+          </if>
+          <if test='status != "" and status != null '> 
+          <![CDATA[
+               and tq.status = #{status}
+          ]]>  
+          </if>
+          <![CDATA[
+              order by tq.reg_date
+          ]]> 
 	</select>
 
 	<insert id="insertQuInfo" parameterType="KAKNM01VO"> 
 		<![CDATA[
-            WITH INS1 AS(
-               INSERT 
-                 INTO tb_question
+            WITH INS1 AS( /* sdk knm/KAKNM01_SQL.xml - insertQuInfo - 지식관리 기술문의 등록 */
+               insert 
+                 into tb_question
                     ( question_id
                     , project_id
                     , reg_userid 
@@ -212,7 +335,7 @@
                     , content_q 
                     , content_s
                     , err_log)
-               VALUES 
+               values 
                     ( #{question_id}
                     , #{project_id}
                     , #{userid}
@@ -222,16 +345,17 @@
                     , #{content_s}
                     , #{err_log})
             RETURNING question_id, reg_userid
-            ), INST2 AS (
-               INSERT 
-                 INTO tb_point 
+            )
+               insert 
+                 into tb_point 
                     ( point_id
                     , user_id
                     , point_value
                     , act_code
                     , post_type
-                    , post_id)
-               VALUES 
+                    , post_id
+                    , solution_id)
+               values 
                     ( CONCAT('PO', TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDDHH24MISSMS'))
                     , (select reg_userid 
                          from INS1)
@@ -241,23 +365,111 @@
                     , 'PA010000'
                     , 'Q'
                     , (select question_id 
-                         from INS1))
-             ) INSERT 
-                 INTO tb_tag 
-                    ( tag_id
-                    , post_type
-                    , post_id
-                    , tag_type
-                    , tag_value)
-               VALUES 
-                    ( CONCAT('TG', TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDDHH24MISSMS'))
-                    , 'Q'
-                    , (select question_id 
                          from INS1)
-                    , 'TAG'
-                    , #{tag_value}
-                    )
+                    , #{solution_id})
+             
 		]]>
 	</insert>
+
+	<insert id="insertTag" parameterType="KAKNM01VO"> 
+		<![CDATA[
+            insert /* sdk knm/KAKNM01_SQL.xml - insertTag - 지식관리 기술문의 일반태그 등록*/
+              into tb_tag 
+                 ( tag_id
+                 , post_type
+                 , post_id
+                 , tag_type
+                 , tag_value)
+            values 
+                 ( #{tag_id}
+                 , 'Q'
+                 , #{question_id}
+                 , 'TAG'
+                 , #{tag_value}
+                 )
+		]]>
+	</insert>
+
+	<insert id="insertErcTag" parameterType="map"> 
+		<![CDATA[
+            insert /* sdk knm/KAKNM01_SQL.xml - insertErcTag - 지식관리 기술문의 에러코드태그 등록 */
+              into tb_tag 
+                 ( tag_id
+                 , post_type
+                 , post_id
+                 , tag_type
+                 , tag_value)
+            values 
+                 ( #{tag_id}
+                 , 'Q'
+                 , #{question_id}
+                 , 'ERC'
+                 , #{tag_value}
+                 )
+		]]>
+	</insert>
+
+	<insert id="insertErtTag" parameterType="map"> 
+		<![CDATA[
+            insert /* sdk knm/KAKNM01_SQL.xml - insertErtTag - 지식관리 기술문의 예외종류태그 등록 */
+              into tb_tag 
+                 ( tag_id
+                 , post_type
+                 , post_id
+                 , tag_type
+                 , tag_value)
+            values 
+                 ( #{tag_id}
+                 , 'Q'
+                 , #{question_id}
+                 , 'ERT'
+                 , #{tag_value}
+                 )
+		]]>
+	</insert>
+
+	<update id="updateQuInfo" parameterType="KAKNM01VO"> 
+		<![CDATA[
+            update tb_question /* sdk knm/KAKNM01_SQL.xml - updateQuInfo - 지식관리 기술문의 수정 */
+               set project_id    = #{project_id}      /* 프로젝트 ID */
+                 , solution_id   = #{solution_id}     /* 솔루션 ID */ 
+                 , title         = #{title}           /* 제목 */ 
+                 , content_q     = #{content_q}       /* 질문 내용 */ 
+                 , content_s     = #{content_s}       /* 환경 및 상황 */ 
+                 , err_log       = #{err_log}         /* 오류 로그 */ 
+                 , update_userid = #{userid}          /* 수정자 */
+                 , update_date   = current_timestamp  /* 수정일 */
+             where question_id   = #{question_id}
+               and reg_userid    = #{userid}
+		]]>
+	</update>
+
+	<delete id="deleteTagInfo" parameterType="KAKNM01VO"> 
+	     <![CDATA[
+             delete /* sdk knm/KAKNM01_SQL.xml - deleteTagInfo - 지식관리 기술문의 태그 삭제 */
+               from tb_tag
+              where post_id = #{question_id}
+		]]>
+     </delete>
+     
+	<delete id="deletetQuInfo" parameterType="KAKNM01VO"> 
+		<![CDATA[
+            WITH INS1 AS( /* sdk knm/KAKNM01_SQL.xml - deletetQuInfo - 지식관리 기술문의 삭제 */
+
+             update tb_question
+                set display_yn = 'N'
+                  , update_userid = #{userid}       
+                  , update_date = current_timestamp
+              where question_id = #{question_id}
+                and reg_userid = #{userid} 
+
+            RETURNING question_id, reg_userid
+            )
+              delete  
+                from tb_point
+               where post_id = #{question_id}
+                 and act_code = 'PA010000'    /* 기술문의 코드 */
+          ]]>
+	</delete>
 
 </mapper>
