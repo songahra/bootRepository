@@ -57,9 +57,14 @@ public class KAPRM01DAO {
 
     }
 
-    //사용자 총 누적 지식 포인트 조회
+    // 사용자 총 누적 지식 포인트 조회
     public int selectTotalPoint(String user_id){
         System.out.println("selectTotalPoint DAO 도착");
         return sqlSession.selectOne("selectTotalPoint", user_id);
+    }
+    // 이번달 총 누적 지식 포인트 조회
+    public int selectMonthTotalPoint(KAPRM02DTO KAPRM02DTO){
+        System.out.println("selectMonthTotalPoint DAO도착");
+       return sqlSession.selectOne("selectMonthTotalPoint", KAPRM02DTO);
     }
 }

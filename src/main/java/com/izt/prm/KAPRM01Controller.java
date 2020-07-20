@@ -116,11 +116,15 @@ import org.springframework.web.bind.annotation.RequestParam;
    
    //사용자 총 누적 지식 포인트 조회
    @GetMapping(value="selectTotalPoint")
-   public int selectTotalPoint(@RequestParam(value = "user_id")String user_id) {
+   public KAPRM02DTO selectTotalPoint(@RequestParam(value = "user_id") String user_id,
+                                     @RequestParam(value="month") String month) {
       System.out.println("selectTotalPoint컨트롤러 도착"); 
-
-      return KAPRM01Service.selectTotalPoint(user_id);
+      System.out.println("값은?");
+                                       
+      return KAPRM01Service.selectTotalPoint(user_id, month);
    }
+
+   //
    
  }
 

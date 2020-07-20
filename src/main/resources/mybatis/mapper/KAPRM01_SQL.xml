@@ -69,21 +69,22 @@
 	</select>
 
 	<!-- 총 누적 지식 포인트 조회 -->
-	<select id="selectTotalPoint" parameterType="String"  resultType= ="int">
+	<select id="selectTotalPoint" parameterType="String" resultType="int">
 	<![CDATA[
-	select sum(point_value) as total_point
-	from tb_point
-	where user_id = #{user_id}
+	SELECT COALESCE(sum(point_value),0) as total_point
+	FROM tb_point
+	WHERE user_id = #{user_id}
 	]]>
 	</select>
 
-	<!-- 이달 누적 지식 포인트 조회 -->
-	<select id="" parameterType="KAPRM02DTO" resultType="int">
+	<!-- 이번달 누적 지식 포인트 조회 -->
+	<select id="selectMonthTotalPoint" parameterType="KAPRM02DTO" resultType="int">
 	<![CDATA[
-	select sum(point_value) as total_point
-	from tb_point
-	where user_id = #{user_id}
-	and to_char(reg_date, 'MM') = #{month}
+	SELECT COALESCE(sum(point_value),0) as month_total_point
+	FROM tb_point
+	WHERE user_id = #{user_id}
+	AND to_char(reg_date, 'MM') = #{month}
 	]]>
 	</select>
+
 </mapper>

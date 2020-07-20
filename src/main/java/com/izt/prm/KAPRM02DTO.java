@@ -7,6 +7,25 @@ public class KAPRM02DTO {
 	private String end_date;
 	private String month;
 	
+	private int total_point;
+	private int month_total_point;
+
+	
+	public int getTotal_point(){
+		return total_point;
+	}
+	public int getMonth_total_point(){
+		return month_total_point;
+	}
+
+	public void setTotal_point(int total_point){
+		this.total_point = total_point;
+	}
+
+	public void setMonth_total_point(int month_toal_point){
+		this.month_total_point = month_toal_point;
+	}
+
 	public String getUser_id() {
 		return user_id;
 	}

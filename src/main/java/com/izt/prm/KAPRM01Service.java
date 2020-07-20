@@ -124,11 +124,22 @@ public class KAPRM01Service {
         List<KAPRM01VO> list = KAPRM01DAO.selectMonthPoint(KAPRM02DTO);
         return list;
     }
-    //사용자 총 누적 지식 포인트 조회
-    public int selectTotalPoint(String user_id){
+    //사용자 총 누적 지식 포인트 조회 & 이번달 총 누적 지식 포인트 조회
+    public KAPRM02DTO selectTotalPoint(String user_id, String month){
+        KAPRM02DTO KAPRM02DTO = new KAPRM02DTO();
+        KAPRM02DTO.setUser_id(user_id);
+        KAPRM02DTO.setMonth(month);
+
         System.out.println("selectTotalPoint 서비스 도착");
+        System.out.println(KAPRM02DTO.toString());
+
         int total_point = KAPRM01DAO.selectTotalPoint(user_id);
-        System.out.println("total_point: "+total_point);
-        return total_point;
+        int month_total_point = KAPRM01DAO.selectMonthTotalPoint(KAPRM02DTO);
+
+        KAPRM02DTO.setTotal_point(total_point);
+        KAPRM02DTO.setMonth_total_point(month_total_point);
+
+        System.out.println("point 조회는?" + KAPRM02DTO.toString());
+        return KAPRM02DTO;
     }
 }
