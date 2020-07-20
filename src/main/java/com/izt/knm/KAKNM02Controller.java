@@ -34,14 +34,24 @@ public class KAKNM02Controller {
     // 답변 작성
     @PostMapping(value = "write")
     public int write(@RequestBody KAKNM02VO kAKNM02VO) {
-        System.out.println("KAKNM02Controller << write >> called...");
+        System.out.println("KAKNM02Controller << write / modify >> called...");
         return KAKNM02Service.postWrite(kAKNM02VO);
     }
 
+    // 답변 가져오기
+    @GetMapping(value = "getAnswer")
+    public List<KAKNM02VO> getAnswer(@RequestParam(value="ansId") String answer_id){
+        System.out.println("KAKNM02Controller getAnswer called..");
+        System.out.println("answer_id : " + answer_id);
+        List<KAKNM02VO> KAKNM02VO = KAKNM02Service.getAnswer(answer_id);
+        return KAKNM02VO;
+    }
+
+    // 내가 답변한 리스트
     @GetMapping(value = "getList")
     public List<KAKNM02VO> getList(@RequestParam(value="title") String title,
-                                      @RequestParam(value="status") String status,
-                                      @RequestParam(value="user") String user) {
+                                   @RequestParam(value="status") String status,
+                                   @RequestParam(value="user") String user) {
         System.out.println("KAKNM02Controller searchList called..");
         System.out.println("title : " + title);
         System.out.println("status : " + status);
@@ -50,6 +60,7 @@ public class KAKNM02Controller {
         return KAKNM02VO;
     }
 
+   
 
     
 }

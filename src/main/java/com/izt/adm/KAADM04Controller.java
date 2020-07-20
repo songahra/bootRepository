@@ -23,6 +23,7 @@ public class KAADM04Controller {
     @Autowired
     private KAADM04Service kAADM04Service;
 
+    // 솔루션별 지식포인트 조회
     @GetMapping(value="sol")
     public List<KAADM04VO> getSolList(@RequestParam(value="reg_date_start") String sDate,
                                       @RequestParam(value="reg_date_end") String eDate) {
@@ -31,7 +32,7 @@ public class KAADM04Controller {
         System.out.println("KAADM04VO => " + KAADM04VO);
         return KAADM04VO;
     }
-
+    // 사용자별 지식포인트 조회
     @GetMapping(value="user")
     public List<KAADM04VO> getUserList(@RequestParam(value="reg_date_start") String sDate,
                                        @RequestParam(value="reg_date_end") String eDate) {
@@ -41,6 +42,7 @@ public class KAADM04Controller {
         return KAADM04VO;
     }
 
+    // 선택된 솔루션의 지식포인트 조회
     @GetMapping(value="searchPointSol")
     public List<KAADM04VO> getPointSearchListSol(@RequestParam(value="solution") String solution,
                                                  @RequestParam(value="type") String type,
@@ -53,6 +55,7 @@ public class KAADM04Controller {
         return KAADM04VO;
     }
 
+    // 선택된 유저의 지식포인트 조회
     @GetMapping(value="searchPointUser")
     public List<KAADM04VO> getPointSearchListUser(@RequestParam(value="user") String userId,
                                                   @RequestParam(value="type") String type,

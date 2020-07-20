@@ -21,7 +21,7 @@ import org.springframework.stereotype.Repository;
 public class KAADM04DAO {
     @Autowired
     SqlSession sqlSession;
-
+    // 솔루션 지식포인트 조회
     public List<KAADM04VO> getSolList(String sDate, String eDate) {
         System.out.println("KAADM04DAO.GETSOLLIST CALLED...");
         Map<String, Object> map = new HashMap<String, Object>();
@@ -29,7 +29,7 @@ public class KAADM04DAO {
         map.put("eDate", eDate);
         return sqlSession.selectList("KAADM04.getSolList", map);
     }
-
+    // 사용자 지식포인트 조회
     public List<KAADM04VO> getUserList(String sDate, String eDate) {
         System.out.println("KAADM04DAO.GETUSERLIST CALLED...");
         Map<String, Object> map = new HashMap<String, Object>();
@@ -38,6 +38,8 @@ public class KAADM04DAO {
         return sqlSession.selectList("KAADM04.getUserList", map);
     }
 
+    // 솔루션별 지식포인트 조회
+    // 질문, 답변, 미해결 기준으로 조회
 	public List<KAADM04VO> getPointSearchListSol(String sol, String type, String sDate, String eDate) {
         System.out.println("KAADM04DAO.getPointSearchListSol Called...");
         System.out.println("type" + type);
@@ -47,19 +49,21 @@ public class KAADM04DAO {
         map.put("sDate", sDate);
         map.put("eDate", eDate);
         System.out.println("map " + map);
-
+        
         if(type.equals("answer")){
-            System.out.println("if(a) 문 들어왔어 ");
+            // 솔루션별 답변조회
             return sqlSession.selectList("KAADM04.getPointSearchSolA", map);
         }else if(type.equals("question")){
-            System.out.println("if(q) 문 들어왔어 ");
+            // 솔루션별 질문조회
             return sqlSession.selectList("KAADM04.getPointSearchSolQ", map);
         }else {
-            System.out.println("if(ns) 문 들어왔어 ");
+            // 솔루션별 미해결 조회
             return sqlSession.selectList("KAADM04.getPointSearchSolNS", map);
         }
-	}
-
+    }
+    
+    // 사용자별 지식포인트 조회
+    // 질문, 답변, 평가 기준으로 조회
 	public List<KAADM04VO> getPointSEarchListUser(String userId, String type, String sDate, String eDate) {
         System.out.println("KAADM04DAO.getPointSearchListUser Called...");
         System.out.println("type" + type);
@@ -70,13 +74,13 @@ public class KAADM04DAO {
         map.put("eDate", eDate);
 
         if(type.equals("answer")){
-            System.out.println("<< USER >> if(a) 문 들어왔어 ");
+            // 사용자별 답변 조회
             return sqlSession.selectList("KAADM04.getPointSearchUserA", map);
         } else if(type.equals("question")){
-            System.out.println("<< USER >> if(q) 문 들어왔어 ");
+            // 사용자별 질문 조회
             return sqlSession.selectList("KAADM04.getPointSearchUserQ", map);
         } else {
-            System.out.println("<< USER >> if(sc) 문 들어왔어 ");
+            // 사용자별 평가 조회
             return sqlSession.selectList("KAADM04.getPointSearchUserSC", map);
         }
 	}

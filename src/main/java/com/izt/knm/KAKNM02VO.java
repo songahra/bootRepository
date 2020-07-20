@@ -24,12 +24,17 @@ public class KAKNM02VO {
    private String tag_id;
    private String solution_id;
 
+   // detail
+   private String dept;
+   private String ansName;
+
    // update (tb_question)
    private String question_id;
    
    // modify (tb_answer)
    private String display_yn;
    private int hit;
+   private String do_type;
 
    // list (tb_question, tb_answer)
    private String status;
@@ -40,6 +45,26 @@ public class KAKNM02VO {
    private String reg_userid_ta;
    private String term;
 
+
+
+	public String getDo_type() {
+		return do_type;
+	}
+	public void setDo_type(String do_type) {
+		this.do_type = do_type;
+	}
+	public String getDept() {
+		return dept;
+	}
+	public void setDept(String dept) {
+		this.dept = dept;
+	}
+	public String getAnsName() {
+		return ansName;
+	}
+	public void setAnsName(String ansName) {
+		this.ansName = ansName;
+	}
    	public String getAnswer_id() {
 		return answer_id;
 	}
