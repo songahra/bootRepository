@@ -67,4 +67,10 @@ public class KALOG01DAO {
       return sqlSession.selectList("getSolution");
    }
 
+   //비밀번호 변경
+   public void updatePassword(KALOG01VO KALOG01VO){
+      System.out.println("updatePassword DAO 도착");
+      sqlSession.update("updatePassword", KALOG01VO);
+   }
+
 }
