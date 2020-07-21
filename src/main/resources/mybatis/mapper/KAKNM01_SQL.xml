@@ -14,11 +14,12 @@
                  , (select tu.user_name 
                       from tb_user tu 
                      where tu.user_id = tq.reg_userid ) AS reg_userName_tq
-                 , tq.reg_date ::timestamp::date AS reg_date_tq
+                 , tq.reg_date ::timestamp::date AS reg_date_tq2    
+                 , TO_CHAR(tq.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_tq
                  , (select tu.user_name 
                       from tb_user tu 
                      where tu.user_id = ta.reg_userid ) AS reg_userName_ta
-                 , ta.reg_date ::timestamp::date AS reg_date_ta
+                 , TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_ta
                  , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
                          then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
                          when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') <= '00'
@@ -29,55 +30,51 @@
                          when tq.status = 'NN' then '미완료' end) AS status
                  , tq.question_id
                  , tq.reg_userid
+                 , tq.requestion_id
+                 , tq.answer_id
               from tb_question tq
               left JOIN tb_answer ta
                 on tq.answer_id = ta.answer_id
              where tq.display_yn ='Y'
-             order by tq.reg_date DESC
+             order by tq.reg_date desc
 		]]>
 	</select>
     
     <select id="srchList" parameterType="KAKNM01VO" resultType="KAKNM01VO">
-		<![CDATA[
-            select /* sdk knm/KAKNM01_SQL.xml - srchList - 지식관리 기술문의 리스트 조회 */
-                   (ROW_NUMBER() OVER()) AS rowNum
-                 , foo.solution_name
-                 , foo.title
-                 , foo.reg_userName_tq
-                 , foo.reg_date_tq
-                 , foo.reg_userName_ta
-                 , foo.reg_date_ta
-                 , foo.term
-                 , foo.status
-                 , foo.question_id
-              from tb_tag tt
-             inner join 
-           (select (select tc.code_content 
+          <![CDATA[
+            select distinct /* sdk knm/KAKNM01_SQL.xml - getAllList - 지식관리 기술문의 메인 리스트 */
+                   /* (ROW_NUMBER() OVER()) AS rowNum */
+                  (select tc.code_content 
                       from tb_code tc 
-                     where tc.code_id = tq.solution_id ) as solution_name
-                 , tq.title as title
+                     where tc.code_id = tq.solution_id ) AS solution_name 
+                 , tq.title 
                  , (select tu.user_name 
                       from tb_user tu 
-                     where tu.user_id = tq.reg_userid ) as reg_userName_tq
-                 , tq.reg_date as reg_date_tq 
+                     where tu.user_id = tq.reg_userid ) AS reg_userName_tq
+                 , tq.reg_date ::timestamp::date AS reg_date_tq2    
+                 , TO_CHAR(tq.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_tq
                  , (select tu.user_name 
                       from tb_user tu 
-                     where tu.user_id = ta.reg_userid ) as  reg_userName_ta
-                 , ta.reg_date as reg_date_ta 
+                     where tu.user_id = ta.reg_userid ) AS reg_userName_ta
+                 , TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_ta
                  , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
                          then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
                          when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') <= '00'
-                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'HH'), ' HOURS') end)as term
-                 , (case when tq.status = 'SS' then '완료' 
+                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'HH'), ' HOURS')
+                         else '--' end) AS term              
+                 , (case when tq.status = 'SS' then '완료'
                          when tq.status = 'RQ' then '재질문' 
-                         when tq.status = 'NN' then '미완료' end) as status
+                         when tq.status = 'NN' then '미완료' end) AS status
                  , tq.question_id
+                 , tq.reg_userid
+                 , tq.answer_id
               from tb_question tq
-              left join tb_answer ta 
-                on tq.answer_id = ta.answer_id 
-             where tq.display_yn ='Y'   
-               and 1=1
-          ]]>   
+              left JOIN tb_answer ta
+                on tq.answer_id = ta.answer_id
+              left join tb_tag tt
+               on tt.post_id = tq.question_id 
+             where tq.display_yn ='Y'
+          ]]>
           <if test="title != null and title != ''">
           <![CDATA[
                and tq.title like '%'||#{title}||'%'
@@ -101,7 +98,7 @@
           </when>
           <when test="sortType = '3'"> 
           <![CDATA[     
-              order by term
+              order by term desc
           ]]>
           </when>
           <when test="sortType = '4'"> 
@@ -111,15 +108,10 @@
           </when>
           <otherwise> 
           <![CDATA[
-              order by tq.reg_date desc 
+              order by tq.reg_date asc 
           ]]>
           </otherwise> 
           </choose>
-          <![CDATA[
-          ) as foo
-             on tt.post_id = foo.question_id
-          where 1=1
-          ]]>
           <if test='tag_tag != "" and tag_tag != null '> 
           <![CDATA[
 		     and tt.tag_type = 'TAG'
@@ -129,16 +121,15 @@
           <if test='tag_erc != "" and tag_erc != null '> 
           <![CDATA[
 		     and tt.tag_type = 'ERC'
-               and tt.tag_value = #{tag_erc}
+               and tt.tag_value = '%'||#{tag_erc}||'%'
           ]]>
           </if>
           <if test='tag_ert != "" and tag_ert != null '> 
           <![CDATA[
 		     and tt.tag_type = 'ERT'
-               and tt.tag_value = #{tag_ert}
+               and tt.tag_value = '%'||#{tag_ert}||'%'
           ]]>
           </if>
-
 	</select>
 
 	<select id="getDetail" parameterType="map" resultType="KAKNM01VO">
@@ -146,39 +137,40 @@
            select distinct /* sdk knm/KAKNM01_SQL.xml - getDetail - 지식관리 질문상세보기 */
                   (select tu.user_name 
                      from tb_user tu 
-                    where tu.user_id = tq.reg_userid ) as reg_userName_tq   /* 작성자 */
-                 , tq.reg_date as reg_date_tq                               /* 질문 등록일 */ 
+                    where tu.user_id = tq.reg_userid ) as reg_userName_tq    /* 작성자 */
+                 , tq.reg_userid                                             /* 질문등록자 */   
+                 , TO_CHAR(tq.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_tq /* 질문 등록일 */ 
                  , (select dept
                       from tb_user tu
-                     where tu.user_id = tq.reg_userid) as reg_user_dept     /* 작성자 부서 */
-                 , tq.status                                                /* 상태  */
-                 , tq.score                                                 /* 점수 */
-                 , tq.project_id                                            /* 프로젝트 id */
-                 , tq.title                                                 /* 질문 제목 */
-                 , tq.content_q                                             /* 질문 내용 */
-                 , tq.content_s                                             /* 질문 환경 및 상황 */
-                 , tq.err_log                                               /* 오류로그 */
-                 , tq.solution_id                                           /* 솔루션id */
-                 , tq.question_id                                           /* 질문 id */
-                 , ta.answer_id                                             /* 답변 id */
+                     where tu.user_id = tq.reg_userid) as reg_user_dept      /* 작성자 부서 */
+                 , tq.status                                                 /* 상태  */
+                 , tq.score                                                  /* 점수 */
+                 , tq.project_id                                             /* 프로젝트 id */
+                 , tq.title                                                  /* 질문 제목 */
+                 , tq.content_q                                              /* 질문 내용 */
+                 , tq.content_s                                              /* 질문 환경 및 상황 */
+                 , tq.err_log                                                /* 오류로그 */
+                 , tq.solution_id                                            /* 솔루션id */
+                 , tq.question_id                                            /* 질문 id */
+                 , ta.answer_id                                              /* 답변 id */
                  , (select tp.project_name                                  
                       from tb_project tp 
-                     where tq.project_id = tp.project_id ) as project_name  /* 프로젝트 명 */
+                     where tq.project_id = tp.project_id ) as project_name   /* 프로젝트 명 */
                  , (select tc.code_content 
                       from tb_code tc 
-                     where tq.solution_id = tc.code_id ) as solution_name   /* 솔루션 명 */
+                     where tq.solution_id = tc.code_id ) as solution_name    /* 솔루션 명 */
                  , (select concat('#', string_agg(tt.tag_value, ' #')) 
                       from tb_tag tt 
                      where TT.post_id = #{question_id} 
-                       and TT.tag_type = 'TAG') as tag_tag                  /* 태그 */    
+                       and TT.tag_type = 'TAG') as tag_tag                   /* 태그 */    
                  , (select tt.tag_value 
                       from tb_tag tt 
                      where  TT.post_id = #{question_id}
-                       and TT.tag_type = 'ERC') as tag_erc                  /* 에러코드 */     
+                       and TT.tag_type = 'ERC') as tag_erc                   /* 에러코드 */     
                  , (select tt.tag_value
                       from tb_tag tt 
                      where TT.post_id = #{question_id}
-                       and TT.tag_type = 'ERT') as tag_ert                  /* 예외종류 */       
+                       and TT.tag_type = 'ERT') as tag_ert                   /* 예외종류 */       
               from tb_question tq 
               left join tb_answer ta 
                 on tq.answer_id = ta.answer_id
@@ -242,11 +234,13 @@
                  , (select tu.user_name 
                       from tb_user tu 
                      where tu.user_id = tq.reg_userid ) AS reg_userName_tq
-                 , tq.reg_date ::timestamp::date AS reg_date_tq
+                 , tq.reg_date ::timestamp::date AS reg_date_tq2
+                 , TO_CHAR(tq.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_tq
                  , (select tu.user_name 
                       from tb_user tu 
                      where tu.user_id = ta.reg_userid ) AS reg_userName_ta
-                 , ta.reg_date ::timestamp::date AS reg_date_ta
+                 , ta.reg_date ::timestamp::date AS reg_date_ta2
+                 , TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_ta
                  , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
                          then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
                          when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') <= '00'
@@ -281,11 +275,11 @@
                  , (select tu.user_name 
                       from tb_user tu 
                      where tu.user_id = tq.reg_userid ) AS reg_userName_tq
-                 , tq.reg_date ::timestamp::date AS reg_date_tq
+                 , TO_CHAR(tq.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_tq
                  , (select tu.user_name 
                       from tb_user tu 
                      where tu.user_id = ta.reg_userid ) AS reg_userName_ta
-                 , ta.reg_date ::timestamp::date AS reg_date_ta
+                 , TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_ta
                  , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
                          then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
                          when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') <= '00'

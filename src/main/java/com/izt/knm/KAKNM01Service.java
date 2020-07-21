@@ -82,7 +82,7 @@ public class KAKNM01Service {
          }
          Map<String,Object> map = new HashMap<String,Object>();
          
-         if(tag_erc != null){
+         if( tag_erc != null || tag_erc.trim() != null || tag_erc.equals(true)){
              map.put("tag_id",createTbIdService.createPkId("TG"));
              map.put("question_id", question_id);
              map.put("tag_value", kAKNM01VO.getTag_erc());
@@ -92,7 +92,7 @@ public class KAKNM01Service {
              System.out.println("tag_erc의 / " + result);
  
          } 
-         if(tag_ert != null){
+         if(tag_ert != null || tag_ert.trim() != null || tag_ert.equals(true)){
              map.put("tag_id",createTbIdService.createPkId("TG"));
              map.put("question_id", question_id);
              map.put("tag_value", kAKNM01VO.getTag_ert());
