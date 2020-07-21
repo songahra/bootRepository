@@ -46,6 +46,14 @@ public class KAKNM02Controller {
         List<KAKNM02VO> KAKNM02VO = KAKNM02Service.getAnswer(answer_id);
         return KAKNM02VO;
     }
+    // 답변 지우기
+    @GetMapping(value="ansDelete")
+    public int delete(@RequestParam(value="ansId") String answer_id){
+        System.out.println("KAKNM02Controller << delete >> called");
+        System.out.println("answer_id : " + answer_id);
+        KAKNM02Service.delete(answer_id);
+        return 1;
+    }
 
     // 내가 답변한 리스트
     @GetMapping(value = "getList")
