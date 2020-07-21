@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KAKNM02">
+   <select id="getList" parameterType="map" resultType="KAKNM02VO">
+      <![CDATA[
+            /* yes knm/KAKNM02_SQL.xml - getList */
+          select 
+               (select tc.code_content from tb_code tc where tc.code_id = tq.solution_id ) as solution_code,
+               tq.title as title,
+               (select tu.user_name from tb_user tu where tu.user_id = tq.reg_userid) as reg_userid_tq,
+               to_char(tq.reg_date ,'yyyy-mm-dd hh24:mi') reg_date_tq,
+               (select tu.user_name from tb_user tu where tu.user_id = ta.reg_userid) as reg_userid_ta,
+               to_char(ta.reg_date, 'yyyy-mm-dd hh24:mi') as reg_date_ta,
+               ta.reg_date - tq.reg_date as term ,
+               (case when tq.status = 'SS' then '완료'
+                     when tq.status = 'RQ' then '재질문' 
+                     when tq.status = 'NN' then '미완료' end) as status
+          from tb_answer ta 
+          left join tb_question tq
+          on tq.answer_id = ta.answer_id
+          where 1=1
+            and ta.reg_userid = #{reg_userid}
+      ]]>   
+          <if test="title != null and title != ''">
+          <![CDATA[
+               AND tq.title like '%'||#{title}||'%'
+          ]]>
+          </if> 
+          <if test="status != null and status != ''">
+          <![CDATA[
+               AND tq.status = #{status}
+          ]]>
+          </if>    
+          <![CDATA[ 
+             ORDER BY reg_date_tq 
+          ]]>
+   </select>
+
+   <select id="postWrite" parameterType="KAKNM02VO">
+      <![CDATA[
+         with INST1 as (
+            insert into TB_ANSWER (ANSWER_ID, REG_USERID, TITLE, "content" , content_basis)
+               values (#{answer_id},
+                       #{reg_userid},
+                       #{title},
+                       #{content_a},
+                       #{content_b})
+               returning (ANSWER_ID, REG_USERID)
+         ), INST2 as (
+            insert into TB_POINT (POINT_ID, user_id, POINT_VALUE, ACT_CODE, POST_TYPE, POST_ID, SOLUTION_ID)
+                  values (CONCAT('PO', TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDDHH24MISSMS')),
+                        #{reg_userid}, 
+                        (select to_number(TC.code_content, '9') from tb_code tc where TC.code_id = 'PA030000'), 
+                        'PA030000', 
+                        'A', 
+                        #{answer_id},
+                        #{solution_id})
+         ) update TB_QUESTION set answer_id = #{answer_id}, STATUS = 'SS' where question_id = #{question_id};
+      ]]>
+   </select>
+   <select id="postTag" parameterType="KAKNM02VO">
+      <![CDATA[
+         insert into TB_TAG (TAG_ID, POST_TYPE, POST_ID, TAG_TYPE, TAG_VALUE)
+         values (#{tag_id},
+                'A',
+                #{answer_id},
+                'TAG',
+                #{content_t})
+      ]]>
+   </select>
+   <select id="getAnswer" resultType="KAKNM02VO" parameterType="map">
+      <![CDATA[
+         select 
+            ta."content" as content_a,
+            (select tu.user_name from tb_user tu where ta.reg_userid = tu.user_id ) as ansName,
+            (select tu.dept from tb_user tu where ta.reg_userid = tu.user_id ) as dept,
+            ta.reg_date as reg_date
+         from tb_answer ta 
+         where ta.answer_id = #{answer_id}
+      ]]>
+   </select>
+   <select id="delTag" parameterType="KAKNM02VO">
+      <![CDATA[
+         delete from tb_tag tt where tt.post_id = #{answer_id};
+      ]]>
+   </select>
+   <select id="modify" parameterType="KAKNM02VO">
+      <![CDATA[
+         update tb_answer 
+            set "content" = #{content_a}, content_basis = #{content_b}, update_userid = #{reg_userid}, update_date = now() 
+          where answer_id = #{answer_id}
+      ]]>
+   </select>
+   <select id="delete" parameterType="map">
+      <![CDATA[
+         with DEL1 as (
+            delete from tb_answer ta where ta.answer_id = #{answer_id}
+         ), UPT1 as (
+            update tb_question set answer_id = null, status = 'NN' where answer_id = #{answer_id}
+         ) delete from tb_point tp where tp.post_id = #{answer_id} and tp.act_code = 'PA030000'
+      ]]>
+   </select>
+</mapper>

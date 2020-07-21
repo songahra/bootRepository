@@ -34,6 +34,15 @@ public class KAKNM02Service {
 		System.out.println("KAKNM02Service getAnswer Called...!!");
 		return kAKNM02DAO.getAnswer(answer_id);
 	}
+	// 답변 지우기
+	public void delete(String answer_id) {
+		KAKNM02VO kAKNM02VO = new KAKNM02VO();
+		kAKNM02VO.setAnswer_id(answer_id);
+		// 테그 지우기
+		kAKNM02DAO.delTag(kAKNM02VO);
+		// 게시물 지우기
+		kAKNM02DAO.delete(answer_id);
+	}
 	// 답변하기 (+수정)
 	public int postWrite(KAKNM02VO kAKNM02VO) {
 		System.out.println("KAKNM02 << Service >> postWrite Called...!!");
@@ -76,5 +85,6 @@ public class KAKNM02Service {
 		String [] arr = t2.split("#");
 		return arr;
 	}
+	
     
 }

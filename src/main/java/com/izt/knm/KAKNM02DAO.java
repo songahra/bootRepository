@@ -63,4 +63,10 @@ public class KAKNM02DAO {
 		sqlSession.update("KAKNM02.modify", kAKNM02VO);
 	}
 
+	public void delete(String answer_id) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("answer_id", answer_id);
+		sqlSession.delete("KAKNM02.delete", map);
+	}
+
 }

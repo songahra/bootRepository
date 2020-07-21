@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="File">
+    <select id="insert" parameterType="FileVo">
+    <![CDATA[
+        insert into tb_file (FILE_ID, POST_TYPE, POST_ID, org_file_name, save_file_name, file_ext_name, file_size, file_path ) 
+            values (#{file_id}, #{post_type}, #{post_id}, #{org_file_name}, #{save_file_name}, #{file_ext_name}, #{file_size}, #{file_path})
+    ]]>
+    </select>
+
+    <select id="getList" parameterType="map" resultType="FileVo">
+    <![CDATA[
+        select tf.file_id as file_id, 
+               tf.org_file_name as org_file_name
+        from tb_file tf 
+        where tf.post_id = #{postId}   
+    ]]>
+    </select>
+</mapper>
