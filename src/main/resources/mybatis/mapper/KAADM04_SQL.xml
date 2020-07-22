@@ -103,7 +103,6 @@
 	]]>
 	</select>
 
-
 <!-- ////////////////////////////////////////////////////// User List ////////////////////////////////////////////////////// -->
 	<select id="getUserList" parameterType="map" resultType="KAADM04VO">
 	<![CDATA[
@@ -196,6 +195,7 @@
 
 	]]>
 	</select>
+
 <!-- ////////////////////////////////////////////////////// Sol Answer List ////////////////////////////////////////////////////// -->
 	<select id="getPointSearchSolA" parameterType="map" resultType="KAADM04VO">
 		<![CDATA[
@@ -223,6 +223,7 @@
           ]]>
         </if> 
 	</select>
+
 <!-- ////////////////////////////////////////////////////// Sol Question List ////////////////////////////////////////////////////// -->
 	<select id="getPointSearchSolQ" parameterType="KAADM04VO" resultType="KAADM04VO">
 		<![CDATA[
@@ -250,6 +251,7 @@
 			]]>
 		</if>
 	</select>
+
 <!-- ////////////////////////////////////////////////////// Sol NotSuccess List ////////////////////////////////////////////////////// -->
 	<select id="getPointSearchSolNS" parameterType="KAADM04VO" resultType="KAADM04VO">
 		<![CDATA[
@@ -280,8 +282,6 @@
 		</if>
 	</select>
 
-
-
 <!-- ////////////////////////////////////////////////////// User Answer List ////////////////////////////////////////////////////// -->
 	<select id="getPointSearchUserA" parameterType="KAADM04VO" resultType="KAADM04VO">
 		<![CDATA[
@@ -309,6 +309,7 @@
 			]]>
 		</if>
 	</select>
+
 <!-- ////////////////////////////////////////////////////// User Question List ////////////////////////////////////////////////////// -->
 	<select id="getPointSearchUserQ" parameterType="KAADM04VO" resultType="KAADM04VO">
 		<![CDATA[
@@ -336,6 +337,7 @@
 			]]>
 		</if>
 	</select>
+	
 <!-- ////////////////////////////////////////////////////// User Score List ////////////////////////////////////////////////////// -->
 	<select id="getPointSearchUserSC" parameterType="KAADM04VO" resultType="KAADM04VO">
 		<![CDATA[

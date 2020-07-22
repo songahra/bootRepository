@@ -69,6 +69,7 @@
                 #{content_t})
       ]]>
    </select>
+
    <select id="getAnswer" resultType="KAKNM02VO" parameterType="map">
       <![CDATA[
          select 
@@ -80,11 +81,13 @@
          where ta.answer_id = #{answer_id}
       ]]>
    </select>
+   
    <select id="delTag" parameterType="KAKNM02VO">
       <![CDATA[
          delete from tb_tag tt where tt.post_id = #{answer_id};
       ]]>
    </select>
+
    <select id="modify" parameterType="KAKNM02VO">
       <![CDATA[
          update tb_answer 
@@ -92,6 +95,7 @@
           where answer_id = #{answer_id}
       ]]>
    </select>
+
    <select id="delete" parameterType="map">
       <![CDATA[
          with DEL1 as (
