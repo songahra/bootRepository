@@ -197,24 +197,23 @@
             select /* sdk knm/KAKNM01_SQL.xml - srchPrList - 지식관리 프로젝트 조회 리스트 */
                    project_id
                  , project_name
-                 , customer
                  , CONCAT(project_start_date, ' ~ ', project_end_date) as term
               from tb_project
              where 1=1 
 		]]>
           <if test='project_id != "" and project_id != null '> 
           <![CDATA[
-               and project_id like '%'||#{project_id}||'%'
+               and project_id = #{project_id}
           ]]>
           </if>
           <if test='project_name != "" and project_name != null '> 
           <![CDATA[
-               and project_name like '%'||#{project_name}||'%'
+               and project_name = #{project_name}
           ]]>
           </if>
           <if test='customer != "" and customer != null '> 
           <![CDATA[
-               and customer like '%'||#{customer}||'%'
+               and customer = #{customer}
           ]]>
           </if>
 	</select>
