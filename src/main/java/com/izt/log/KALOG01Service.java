@@ -147,7 +147,7 @@ public class KALOG01Service {
          + "로그인 후, 비밀번호 변경 서비스를 이용하시기 바랍니다.<br /><br />" + "새 비밀번호 : " + newPassword + "<br/> <br/> 감사합니다.");
          
          emailMessage.setSubject("솔루션지식자산화시스템 패스워드 변경 요청");
-         emailMessage.setTo_address("2041420@naver.com"); //user 이메일 user_id로 바꿔야함
+         emailMessage.setTo_address(user_id); //user 이메일 user_id로 바꿔야함
          mailService.sendmail(emailMessage);//메일 발송
         
          return "이메일 전송 완료";
