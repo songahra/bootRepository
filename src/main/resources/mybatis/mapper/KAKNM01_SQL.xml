@@ -16,14 +16,14 @@
                      where tu.user_id = tq.reg_userid ) AS reg_userName_tq
                  , tq.reg_date ::timestamp::date AS reg_date_tq2    
                  , TO_CHAR(tq.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_tq
-                 , (select tu.user_name 
-                      from tb_user tu 
-                     where tu.user_id = ta.reg_userid ) AS reg_userName_ta
-                 , TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_ta
+                 , COALESCE((select tu.user_name 
+                              from tb_user tu 
+                             where tu.user_id = ta.reg_userid ), '--') AS reg_userName_ta
+                 , COALESCE(TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI'),'--')AS reg_date_ta
                  , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
                          then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
                          when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') <= '00'
-                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'HH'), ' HOURS')
+                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'HH24'), ' HOURS')
                          else '--' end) AS term              
                  , (case when tq.status = 'SS' then '완료'
                          when tq.status = 'RQ' then '재질문' 
@@ -53,15 +53,16 @@
                      where tu.user_id = tq.reg_userid ) AS reg_userName_tq
                  , tq.reg_date ::timestamp::date AS reg_date_tq2    
                  , TO_CHAR(tq.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_tq
-                 , (select tu.user_name 
-                      from tb_user tu 
-                     where tu.user_id = ta.reg_userid ) AS reg_userName_ta
-                 , TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_ta
+                 , COALESCE((select tu.user_name 
+                              from tb_user tu 
+                             where tu.user_id = ta.reg_userid ), '--') AS reg_userName_ta
+                 , COALESCE(TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI'),'--') AS reg_date_ta
                  , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
                          then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
                          when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') <= '00'
-                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'HH'), ' HOURS')
-                         else '--' end) AS term              
+                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'HH24'), ' HOURS')
+                         else '--' end) AS term  
+                 , (ta.reg_date - tq.reg_date ) as term_de                    
                  , (case when tq.status = 'SS' then '완료'
                          when tq.status = 'RQ' then '재질문' 
                          when tq.status = 'NN' then '미완료' end) AS status
@@ -74,6 +75,7 @@
               left join tb_tag tt
                on tt.post_id = tq.question_id 
              where tq.display_yn ='Y'
+               and 1=1
           ]]>
           <if test="title != null and title != ''">
           <![CDATA[
@@ -85,25 +87,43 @@
                and tq.status = #{status}
           ]]>
           </if>
-          <choose> 
+          <if test='tag_tag != "" and tag_tag != null '> 
+          <![CDATA[
+		     and tt.tag_type = 'TAG'
+               and tt.tag_value like '%'||#{tag_tag}||'%'
+          ]]>
+          </if>
+          <if test='tag_erc != "" and tag_erc != null '> 
+          <![CDATA[
+		     and tt.tag_type = 'ERC'
+               and tt.tag_value like '%'||#{tag_erc}||'%'
+          ]]>
+          </if>
+          <if test='tag_ert != "" and tag_ert != null '> 
+          <![CDATA[
+		     and tt.tag_type = 'ERT'
+               and tt.tag_value like '%'||#{tag_ert}||'%'
+          ]]>
+          </if>
+                    <choose> 
           <when test="sortType = '1'"> 
           <![CDATA[
-              order by tq.reg_userid
+              order by tq.reg_userid asc
           ]]>
           </when>
           <when test="sortType = '2'"> 
           <![CDATA[
-              order by ta.reg_userid
+              order by ta.reg_userid asc
           ]]>
           </when>
           <when test="sortType = '3'"> 
           <![CDATA[     
-              order by term desc
+              order by term_de asc 
           ]]>
           </when>
           <when test="sortType = '4'"> 
           <![CDATA[
-              order by tq.status
+              order by tq.status asc
           ]]>
           </when>
           <otherwise> 
@@ -112,24 +132,6 @@
           ]]>
           </otherwise> 
           </choose>
-          <if test='tag_tag != "" and tag_tag != null '> 
-          <![CDATA[
-		     and tt.tag_type = 'TAG'
-               and tt.tag_value = #{tag_tag}
-          ]]>
-          </if>
-          <if test='tag_erc != "" and tag_erc != null '> 
-          <![CDATA[
-		     and tt.tag_type = 'ERC'
-               and tt.tag_value = '%'||#{tag_erc}||'%'
-          ]]>
-          </if>
-          <if test='tag_ert != "" and tag_ert != null '> 
-          <![CDATA[
-		     and tt.tag_type = 'ERT'
-               and tt.tag_value = '%'||#{tag_ert}||'%'
-          ]]>
-          </if>
 	</select>
 
 	<select id="getDetail" parameterType="map" resultType="KAKNM01VO">
@@ -195,23 +197,24 @@
             select /* sdk knm/KAKNM01_SQL.xml - srchPrList - 지식관리 프로젝트 조회 리스트 */
                    project_id
                  , project_name
+                 , customer
                  , CONCAT(project_start_date, ' ~ ', project_end_date) as term
               from tb_project
              where 1=1 
 		]]>
           <if test='project_id != "" and project_id != null '> 
           <![CDATA[
-               and project_id = #{project_id}
+               and project_id like '%'||#{project_id}||'%'
           ]]>
           </if>
           <if test='project_name != "" and project_name != null '> 
           <![CDATA[
-               and project_name = #{project_name}
+               and project_name like '%'||#{project_name}||'%'
           ]]>
           </if>
           <if test='customer != "" and customer != null '> 
           <![CDATA[
-               and customer = #{customer}
+               and customer like '%'||#{customer}||'%'
           ]]>
           </if>
 	</select>
@@ -236,15 +239,15 @@
                      where tu.user_id = tq.reg_userid ) AS reg_userName_tq
                  , tq.reg_date ::timestamp::date AS reg_date_tq2
                  , TO_CHAR(tq.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_tq
-                 , (select tu.user_name 
-                      from tb_user tu 
-                     where tu.user_id = ta.reg_userid ) AS reg_userName_ta
+                 , COALESCE((select tu.user_name 
+                              from tb_user tu 
+                             where tu.user_id = ta.reg_userid ), '--') AS reg_userName_ta
+                 , COALESCE(TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI'),'--') AS reg_date_ta
                  , ta.reg_date ::timestamp::date AS reg_date_ta2
-                 , TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_ta
                  , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
                          then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
                          when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') <= '00'
-                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'HH'), ' HOURS')
+                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'HH24'), ' HOURS')
                          else '--' end) AS term              
                  , (case when tq.status = 'SS' then '완료'
                          when tq.status = 'RQ' then '재질문' 
@@ -276,14 +279,15 @@
                       from tb_user tu 
                      where tu.user_id = tq.reg_userid ) AS reg_userName_tq
                  , TO_CHAR(tq.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_tq
-                 , (select tu.user_name 
-                      from tb_user tu 
-                     where tu.user_id = ta.reg_userid ) AS reg_userName_ta
+                 , COALESCE((select tu.user_name 
+                              from tb_user tu 
+                             where tu.user_id = ta.reg_userid ), '--') AS reg_userName_ta
+                 , COALESCE(TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI'),'--') AS reg_date_ta
                  , TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_ta
                  , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
                          then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
                          when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') <= '00'
-                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'HH'), ' HOURS')
+                         then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'HH24'), ' HOURS')
                          else '--' end) AS term              
                  , (case when tq.status = 'SS' then '완료'
                          when tq.status = 'RQ' then '재질문' 
