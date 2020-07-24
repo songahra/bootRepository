@@ -21,11 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.izt.common.mail.MailService;
+import com.izt.common.mail.EmailMessage;
+
 @Service
 public class KAKNM01Service {
     @Autowired
     private CreateTbIdService createTbIdService;
-    
+    @Autowired
+    private MailService mailService;
     @Autowired
     private KAKNM01DAO kAKNM01DAO;
 
@@ -42,9 +46,9 @@ public class KAKNM01Service {
     }
 
     // 상세조회
-    public KAKNM01VO getDetail(Map<String, Object> map) {
+    public KAKNM01VO getDetail(String question_id) {
         System.out.println("KAKNM01Service getDetail");
-        return kAKNM01DAO.getDetail(map);
+        return kAKNM01DAO.getDetail(question_id);
     }
 
     // 지식관리 질문 등록
@@ -52,7 +56,9 @@ public class KAKNM01Service {
     public int write(KAKNM01VO kAKNM01VO) {
        System.out.println("KAKNM01Service write..");
        try {
-         // id값생성
+         // user_id
+         String user_id = kAKNM01VO.getUserid();
+         // PK id값생성
          String question_id = createTbIdService.createPkId("QU");
          kAKNM01VO.setQuestion_id(question_id);
          
@@ -100,7 +106,18 @@ public class KAKNM01Service {
              
              result = kAKNM01DAO.insertErtTag(map);
              System.out.println("tag_ert의 / "+result);
+
          }
+         // 메일 전송
+         EmailMessage emailMessage = new EmailMessage();
+         emailMessage.setBody("안녕하세요. 솔루션지식자산화시스템입니다. <br />" + "회원님의 기술문의 등록이 처리 되었습니다 <br />"
+         + "이용해 주셔서 감사합니다");
+         
+         emailMessage.setSubject("[솔루션지식자산화시스템] 회원님의 기술문의가 등록되었습니다.");
+         emailMessage.setTo_address(user_id); //user 이메일 user_id로 바꿔야함
+         mailService.sendmail(emailMessage);//메일 발송        
+
+
          return result;
 
        } catch (Exception e) {
@@ -218,15 +235,15 @@ public class KAKNM01Service {
     }
 
     // 지식관리 프로젝트 리스트 화면
-    public List<KAKNM01VO> getPrList() {
+    public List<KAKNM01VO> getPjList() {
         System.out.println("KAKNM01Service getPrList");
-        return kAKNM01DAO.getPrList();
+        return kAKNM01DAO.getPjList();
     }
 
     // 지식관리 프로젝트 리스트 조회 화면
-    public List<KAKNM01VO> srchPrList(Map<String, Object> map) {
+    public List<KAKNM01VO> srchPjList(Map<String, Object> map) {
         System.out.println("KAKNM01Service srchPrList");
-        return kAKNM01DAO.srchPrList(map);
+        return kAKNM01DAO.srchPjList(map);
     }
 
 }

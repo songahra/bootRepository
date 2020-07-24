@@ -134,7 +134,7 @@
           </choose>
 	</select>
 
-	<select id="getDetail" parameterType="map" resultType="KAKNM01VO">
+	<select id="getDetail" parameterType="String" resultType="KAKNM01VO">
 		<![CDATA[
            select distinct /* sdk knm/KAKNM01_SQL.xml - getDetail - 지식관리 질문상세보기 */
                   (select tu.user_name 
@@ -177,11 +177,10 @@
               left join tb_answer ta 
                 on tq.answer_id = ta.answer_id
              where tq.question_id = #{question_id}
-               and tq.reg_userid = #{reg_userid} 
 		]]>
 	</select>
      
-     <select id="getPrList"  parameterType="map"  resultType="KAKNM01VO">
+     <select id="getPjList"  parameterType="map"  resultType="KAKNM01VO">
 		<![CDATA[
             select /* sdk knm/KAKNM01_SQL.xml - getPrList - 지식관리 프로젝트 리스트 */
                    project_id
@@ -192,7 +191,7 @@
 		]]>
 	</select>
      
-     <select id="srchPrList"  resultType="KAKNM01VO">
+     <select id="srchPjList"  resultType="KAKNM01VO">
 		<![CDATA[
             select /* sdk knm/KAKNM01_SQL.xml - srchPrList - 지식관리 프로젝트 조회 리스트 */
                    project_id
@@ -227,21 +226,22 @@
 
 	<select id="getMyList" resultType="KAKNM01VO">
 		<![CDATA[
-            select /* sdk knm/KAKNM01_SQL.xml - getMyList - 지식관리 내가문의한 리스트 */
-                   /* (ROW_NUMBER() OVER()) AS rowNum */
-                   (select tc.code_content 
+            select /* sdk knm/KAKNM01_SQL.xml - getMyList - 지식관리 내가 문의한 질문 리스트 */
+                   (ROW_NUMBER() OVER()) AS rowNum
+                 , (select tc.code_content 
                       from tb_code tc 
                      where tc.code_id = tq.solution_id ) AS solution_name 
                  , tq.title 
                  , (select tu.user_name 
                       from tb_user tu 
                      where tu.user_id = tq.reg_userid ) AS reg_userName_tq
-                 , tq.reg_date ::timestamp::date AS reg_date_tq2    
+                 , tq.reg_date ::timestamp::date AS reg_date_tq2
                  , TO_CHAR(tq.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_tq
                  , COALESCE((select tu.user_name 
                               from tb_user tu 
                              where tu.user_id = ta.reg_userid ), '--') AS reg_userName_ta
-                 , COALESCE(TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI'),'--')AS reg_date_ta
+                 , COALESCE(TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI'),'--') AS reg_date_ta
+                 , ta.reg_date ::timestamp::date AS reg_date_ta2
                  , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
                          then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
                          when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') <= '00'
@@ -252,22 +252,19 @@
                          when tq.status = 'NN' then '미완료' end) AS status
                  , tq.question_id
                  , tq.reg_userid
-                 , tq.requestion_id
-                 , tq.answer_id
               from tb_question tq
-              left JOIN tb_answer ta
+              left join tb_answer ta
                 on tq.answer_id = ta.answer_id
              where tq.display_yn ='Y'
-              and tq.reg_userid = #{userid}
-            order by tq.reg_date desc
+               and tq.reg_userid = #{userid}
+             order by tq.reg_date 
+               
 		]]>
-
 	</select>
 
 	<select id="srchMyList" resultType="KAKNM01VO">
 		<![CDATA[
-            select /* sdk knm/KAKNM01_SQL.xml - srchMyList - 지식관리 내가문의한 리스트 조회 */
-                   /* (ROW_NUMBER() OVER()) AS rowNum */
+            select /* sdk knm/KAKNM01_SQL.xml - srchMyList - 지식관리 내가 문의한 질문 리스트 조건 조회 */
                    (select tc.code_content 
                       from tb_code tc 
                      where tc.code_id = tq.solution_id ) AS solution_name 
@@ -275,12 +272,12 @@
                  , (select tu.user_name 
                       from tb_user tu 
                      where tu.user_id = tq.reg_userid ) AS reg_userName_tq
-                 , tq.reg_date ::timestamp::date AS reg_date_tq2    
                  , TO_CHAR(tq.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_tq
                  , COALESCE((select tu.user_name 
                               from tb_user tu 
                              where tu.user_id = ta.reg_userid ), '--') AS reg_userName_ta
-                 , COALESCE(TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI'),'--')AS reg_date_ta
+                 , COALESCE(TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI'),'--') AS reg_date_ta
+                 , TO_CHAR(ta.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_ta
                  , (case when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') > '00'
                          then CONCAT(TO_CHAR((ta.reg_date - tq.reg_date ), 'DD'), ' DAYS')
                          when TO_CHAR((ta.reg_date - tq.reg_date ), 'DD') <= '00'
@@ -291,14 +288,12 @@
                          when tq.status = 'NN' then '미완료' end) AS status
                  , tq.question_id
                  , tq.reg_userid
-                 , tq.requestion_id
-                 , tq.answer_id
               from tb_question tq
-              left JOIN tb_answer ta
+              left join tb_answer ta
                 on tq.answer_id = ta.answer_id
              where tq.display_yn ='Y'
-              and tq.reg_userid = #{userid}
-              and 1=1
+               and tq.reg_userid = #{userid}
+               and 1=1
 		]]>
           <if test=' title!= "" and title != null '> 
           <![CDATA[
@@ -466,3 +461,6 @@
 	</delete>
 
 </mapper>
+
+
+

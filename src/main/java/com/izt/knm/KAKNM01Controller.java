@@ -67,17 +67,12 @@ public class KAKNM01Controller {
     * @exception 
     */
     @GetMapping(value="getDetail")
-    public KAKNM01VO getDetail(@RequestParam(value="reg_userid") String reg_userid,
+    public KAKNM01VO getDetail(
                                @RequestParam(value="question_id") String question_id){
         System.out.println("KAKNM01Controller getDetail Method called..");
-        System.out.println("reg_userid : " + reg_userid);
         System.out.println("question_id : " + question_id);
 
-        Map<String,Object> paramMap = new HashMap<String,Object>();
-        paramMap.put("reg_userid", reg_userid);
-        paramMap.put("question_id", question_id);
-
-        KAKNM01VO kAKNM01VO = kAKNM01Service.getDetail(paramMap);     
+        KAKNM01VO kAKNM01VO = kAKNM01Service.getDetail(question_id);     
 
         System.out.println("kAKNM01VO =>=> "+ kAKNM01VO);
         
@@ -159,10 +154,10 @@ public class KAKNM01Controller {
     * @return List<KAKNM01VO>
     * @exception 
     */
-    @GetMapping(value="getPrList")
-    public List<KAKNM01VO> getPrList(){
+    @GetMapping(value="getPjList")
+    public List<KAKNM01VO> getPjList(){
         System.out.println("KAKNM01Controller getPrList Method called..");
-        List<KAKNM01VO> list = kAKNM01Service.getPrList();
+        List<KAKNM01VO> list = kAKNM01Service.getPjList();
         return list;
     }
 
@@ -172,8 +167,8 @@ public class KAKNM01Controller {
     * @return List<KAKNM01VO>
     * @exception 
     */
-    @GetMapping(value="srchPrList")
-    public List<KAKNM01VO> srchPrList(@RequestParam(value="project_id") String project_id,
+    @GetMapping(value="srchPjList")
+    public List<KAKNM01VO> srchPjList(@RequestParam(value="project_id") String project_id,
                                       @RequestParam(value="project_name") String project_name,
                                       @RequestParam(value="customer") String customer){
         System.out.println("KAKNM01Controller srchPrList Method called..");
@@ -186,7 +181,7 @@ public class KAKNM01Controller {
         
         System.out.println("paramMap" + paramMap);
 
-        List<KAKNM01VO> list = kAKNM01Service.srchPrList(paramMap);     
+        List<KAKNM01VO> list = kAKNM01Service.srchPjList(paramMap);     
         
         return list;
     }

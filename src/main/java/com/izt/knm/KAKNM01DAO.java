@@ -38,9 +38,9 @@ public class KAKNM01DAO {
     }
 
     // 지식관리 질문상세보기
-    public KAKNM01VO getDetail(Map<String, Object> map){
+    public KAKNM01VO getDetail(String question_id){
         System.out.println("KAKNM01DAO getList called...");
-        return sqlSession.selectOne(mapperNameSpace+"getDetail", map);
+        return sqlSession.selectOne(mapperNameSpace+"getDetail", question_id);
     }     
 
     // 지식관리 기술문의 질문 id 조회
@@ -104,14 +104,14 @@ public class KAKNM01DAO {
     }
 
     // 지식관리 프로젝트 팝업 리스트 조회
-    public List<KAKNM01VO> getPrList(){
+    public List<KAKNM01VO> getPjList(){
         System.out.println("KAKNM01DAO getPrList");
-        return sqlSession.selectList(mapperNameSpace+"getPrList");
+        return sqlSession.selectList(mapperNameSpace+"getPjList");
     }
         
     // 지식관리 프로젝트 팝업 리스트 조건조회
-    public List<KAKNM01VO> srchPrList(Map<String,Object> map){
+    public List<KAKNM01VO> srchPjList(Map<String,Object> map){
         System.out.println("KAKNM01DAO srchPrList");
-        return  sqlSession.selectList(mapperNameSpace+"srchPrList", map);
+        return sqlSession.selectList(mapperNameSpace+"srchPjList", map);
     }
 }
