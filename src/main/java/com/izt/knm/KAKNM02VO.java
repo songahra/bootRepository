@@ -27,6 +27,8 @@ public class KAKNM02VO {
    // detail
    private String dept;
    private String ansName;
+   private String upAnsName;
+   private String upDept;
 
    // update (tb_question)
    private String question_id;
@@ -47,6 +49,18 @@ public class KAKNM02VO {
 
 
 
+	public String getUpAnsName() {
+		return upAnsName;
+	}
+	public void setUpAnsName(String upAnsName) {
+		this.upAnsName = upAnsName;
+	}
+	public String getUpDept() {
+		return upDept;
+	}
+	public void setUpDept(String upDept) {
+		this.upDept = upDept;
+	}
 	public String getDo_type() {
 		return do_type;
 	}
@@ -192,17 +206,18 @@ public class KAKNM02VO {
 		this.term = term;
 	}
 
-
 	@Override
 	public String toString() {
-		return "Practice [answer_id=" + answer_id + ", reg_userid=" + reg_userid + ", update_userid=" + update_userid
+		return "Practice02 [answer_id=" + answer_id + ", reg_userid=" + reg_userid + ", update_userid=" + update_userid
 				+ ", reg_date=" + reg_date + ", update_date=" + update_date + ", title=" + title + ", content_a="
 				+ content_a + ", content_b=" + content_b + ", content_t=" + content_t + ", tag_id=" + tag_id
-				+ ", solution_id=" + solution_id + ", question_id=" + question_id + ", display_yn=" + display_yn
-				+ ", hit=" + hit + ", status=" + status + ", solution_code=" + solution_code + ", reg_date_tq="
-				+ reg_date_tq + ", reg_date_ta=" + reg_date_ta + ", reg_userid_tq=" + reg_userid_tq + ", reg_userid_ta="
-				+ reg_userid_ta + ", term=" + term + "]";
+				+ ", solution_id=" + solution_id + ", dept=" + dept + ", ansName=" + ansName + ", upAnsName="
+				+ upAnsName + ", upDept=" + upDept + ", question_id=" + question_id + ", display_yn=" + display_yn
+				+ ", hit=" + hit + ", do_type=" + do_type + ", status=" + status + ", solution_code=" + solution_code
+				+ ", reg_date_tq=" + reg_date_tq + ", reg_date_ta=" + reg_date_ta + ", reg_userid_tq=" + reg_userid_tq
+				+ ", reg_userid_ta=" + reg_userid_ta + ", term=" + term + "]";
 	}
+	
 	
 	
 }
