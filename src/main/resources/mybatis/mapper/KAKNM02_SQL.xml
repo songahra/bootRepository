@@ -77,12 +77,17 @@
       <![CDATA[
          select 
             ta."content" as content_a,
+            ta.content_basis as content_b,
             (select tu.user_name from tb_user tu where ta.reg_userid = tu.user_id ) as ansName,
             (select tu.user_name from tb_user tu where ta.update_userid = tu.user_id ) as UpAnsName,
             (select tu.dept from tb_user tu where ta.reg_userid = tu.user_id ) as dept,
             (select tu.dept from tb_user tu where ta.update_userid = tu.user_id ) as upDept,
             ta.reg_date as reg_date,
-            ta.update_date as update_date
+            ta.update_date as update_date,
+            (select concat('#', string_agg(tt.tag_value, ' #')) 
+                      from tb_tag tt 
+                     where TT.post_id = #{answer_id}
+                       and TT.tag_type = 'TAG') as content_t 
          from tb_answer ta 
          where ta.answer_id = #{answer_id}
       ]]>
