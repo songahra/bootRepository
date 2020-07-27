@@ -24,6 +24,14 @@ public class KAKNM02VO {
    private String tag_id;
    private String solution_id;
 
+   // modify question data
+   private String solution_name;
+   private String project_name;
+   private String tag_tag;
+   private String tag_erc;
+   private String tag_ert;
+   private String content_q;
+
    // detail
    private String dept;
    private String ansName;
@@ -47,39 +55,7 @@ public class KAKNM02VO {
    private String reg_userid_ta;
    private String term;
 
-
-
-	public String getUpAnsName() {
-		return upAnsName;
-	}
-	public void setUpAnsName(String upAnsName) {
-		this.upAnsName = upAnsName;
-	}
-	public String getUpDept() {
-		return upDept;
-	}
-	public void setUpDept(String upDept) {
-		this.upDept = upDept;
-	}
-	public String getDo_type() {
-		return do_type;
-	}
-	public void setDo_type(String do_type) {
-		this.do_type = do_type;
-	}
-	public String getDept() {
-		return dept;
-	}
-	public void setDept(String dept) {
-		this.dept = dept;
-	}
-	public String getAnsName() {
-		return ansName;
-	}
-	public void setAnsName(String ansName) {
-		this.ansName = ansName;
-	}
-   	public String getAnswer_id() {
+	public String getAnswer_id() {
 		return answer_id;
 	}
 	public void setAnswer_id(String answer_id) {
@@ -145,6 +121,30 @@ public class KAKNM02VO {
 	public void setSolution_id(String solution_id) {
 		this.solution_id = solution_id;
 	}
+	public String getDept() {
+		return dept;
+	}
+	public void setDept(String dept) {
+		this.dept = dept;
+	}
+	public String getAnsName() {
+		return ansName;
+	}
+	public void setAnsName(String ansName) {
+		this.ansName = ansName;
+	}
+	public String getUpAnsName() {
+		return upAnsName;
+	}
+	public void setUpAnsName(String upAnsName) {
+		this.upAnsName = upAnsName;
+	}
+	public String getUpDept() {
+		return upDept;
+	}
+	public void setUpDept(String upDept) {
+		this.upDept = upDept;
+	}
 	public String getQuestion_id() {
 		return question_id;
 	}
@@ -162,6 +162,12 @@ public class KAKNM02VO {
 	}
 	public void setHit(int hit) {
 		this.hit = hit;
+	}
+	public String getDo_type() {
+		return do_type;
+	}
+	public void setDo_type(String do_type) {
+		this.do_type = do_type;
 	}
 	public String getStatus() {
 		return status;
@@ -205,6 +211,42 @@ public class KAKNM02VO {
 	public void setTerm(String term) {
 		this.term = term;
 	}
+	public String getSolution_name() {
+		return solution_name;
+	}
+	public void setSolution_name(String solution_name) {
+		this.solution_name = solution_name;
+	}
+	public String getProject_name() {
+		return project_name;
+	}
+	public void setProject_name(String project_name) {
+		this.project_name = project_name;
+	}
+	public String getTag_tag() {
+		return tag_tag;
+	}
+	public void setTag_tag(String tag_tag) {
+		this.tag_tag = tag_tag;
+	}
+	public String getTag_erc() {
+		return tag_erc;
+	}
+	public void setTag_erc(String tag_erc) {
+		this.tag_erc = tag_erc;
+	}
+	public String getTag_ert() {
+		return tag_ert;
+	}
+	public void setTag_ert(String tag_ert) {
+		this.tag_ert = tag_ert;
+	}
+	public String getContent_q() {
+		return content_q;
+	}
+	public void setContent_q(String content_q) {
+		this.content_q = content_q;
+	}
 
 	@Override
 	public String toString() {
@@ -215,7 +257,9 @@ public class KAKNM02VO {
 				+ upAnsName + ", upDept=" + upDept + ", question_id=" + question_id + ", display_yn=" + display_yn
 				+ ", hit=" + hit + ", do_type=" + do_type + ", status=" + status + ", solution_code=" + solution_code
 				+ ", reg_date_tq=" + reg_date_tq + ", reg_date_ta=" + reg_date_ta + ", reg_userid_tq=" + reg_userid_tq
-				+ ", reg_userid_ta=" + reg_userid_ta + ", term=" + term + "]";
+				+ ", reg_userid_ta=" + reg_userid_ta + ", term=" + term + ", solution_name=" + solution_name
+				+ ", project_name=" + project_name + ", tag_tag=" + tag_tag + ", tag_erc=" + tag_erc + ", tag_ert="
+				+ tag_ert + ", content_q=" + content_q + "]";
 	}
 	
 	

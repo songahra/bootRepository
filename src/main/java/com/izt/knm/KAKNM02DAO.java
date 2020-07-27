@@ -8,7 +8,6 @@
  * -------------------------------
  */
 package com.izt.knm;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +43,14 @@ public class KAKNM02DAO {
 		System.out.println("KAKNM02DAO postTag");
 		sqlSession.insert("KAKNM02.postTag", kAKNM02VO);
 	}
+	// 답변 수정을 위한 질문답변 정보 가져오기
+	public KAKNM02VO getModifyDetail(/*String question_id,*/ String answer_id){
+		System.out.println("KAKNM02DAO getModifyDetail");
+		Map<String, Object> map = new HashMap<String, Object>();
+		// map.put("question_id", question_id);
+		map.put("answer_id", answer_id);
+		return sqlSession.selectOne("KAKNM02.getModifyDetail", map);
+	}
 
 	// 답변 가져오기
 	public List<KAKNM02VO> getAnswer(String answer_id) {
@@ -60,6 +67,7 @@ public class KAKNM02DAO {
 
 	// 수정하기
 	public void modify(KAKNM02VO kAKNM02VO) {
+		System.out.println("KAKNM02DAO modify");
 		sqlSession.update("KAKNM02.modify", kAKNM02VO);
 	}
 

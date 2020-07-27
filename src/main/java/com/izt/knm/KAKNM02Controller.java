@@ -37,10 +37,19 @@ public class KAKNM02Controller {
         System.out.println("KAKNM02Controller << write / modify >> called...");
         return KAKNM02Service.postWrite(kAKNM02VO);
     }
-
+    // 답변 수정을 위한 질문 답변 detail 가져오기
+    @GetMapping(value = "getModifyDetail")
+    public KAKNM02VO getModifyDetail(/*@RequestParam(value="questionId") String question_id,*/
+                                           @RequestParam(value="answer_id") String answer_id){
+        System.out.println("KAKNM02CONTROLLER <<<<<< GET Modify DETAIL >>>>>> CALLED");
+        // System.out.println("question_id : " + question_id);
+        System.out.println("answer_id : " + answer_id);
+        KAKNM02VO kAKNM02VO = KAKNM02Service.getModifyDetail(/*question_id,*/ answer_id);
+        return kAKNM02VO ;
+    }
     // 답변 가져오기
     @GetMapping(value = "getAnswer")
-    public List<KAKNM02VO> getAnswer(@RequestParam(value="ansId") String answer_id){
+    public List<KAKNM02VO> getAnswer(@RequestParam(value="answer_id") String answer_id){
         System.out.println("KAKNM02Controller getAnswer called..");
         System.out.println("answer_id : " + answer_id);
         List<KAKNM02VO> KAKNM02VO = KAKNM02Service.getAnswer(answer_id);
@@ -48,7 +57,7 @@ public class KAKNM02Controller {
     }
     // 답변 지우기
     @GetMapping(value="ansDelete")
-    public int delete(@RequestParam(value="ansId") String answer_id){
+    public int delete(@RequestParam(value="answer_id") String answer_id){
         System.out.println("KAKNM02Controller << delete >> called");
         System.out.println("answer_id : " + answer_id);
         KAKNM02Service.delete(answer_id);

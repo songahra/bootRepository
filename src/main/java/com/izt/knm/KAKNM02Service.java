@@ -34,12 +34,16 @@ public class KAKNM02Service {
 		System.out.println("KAKNM02Service getAnswer Called...!!");
 		return kAKNM02DAO.getAnswer(answer_id);
 	}
+	public KAKNM02VO getModifyDetail(/*String question_id, */String answer_id) {
+		System.out.println("KAKNM02Service << getModifyDetail >> Called...!!");
+		return kAKNM02DAO.getModifyDetail(/*question_id,*/ answer_id);
+	}
 	// 답변 지우기
 	public void delete(String answer_id) {
 		KAKNM02VO kAKNM02VO = new KAKNM02VO();
 		kAKNM02VO.setAnswer_id(answer_id);
 		// 테그 지우기
-		kAKNM02DAO.delTag(kAKNM02VO);
+		// kAKNM02DAO.delTag(kAKNM02VO);
 		// 게시물 지우기
 		kAKNM02DAO.delete(answer_id);
 	}
@@ -51,6 +55,7 @@ public class KAKNM02Service {
 		
 		// 답변작성이라면
 		if(kAKNM02VO.getDo_type().equals("W")){
+			System.out.println("KAKNM02 Service postWrite >>> Post Called...!!");
 			// answer id 생성
 			kAKNM02VO.setAnswer_id(createTbIdService.createPkId("AN"));
 			// answer insert
@@ -58,6 +63,7 @@ public class KAKNM02Service {
 		}
 		// 수정이라면 (answer id 생성할 필요 없음)
 		else if(kAKNM02VO.getDo_type().equals("M")){
+			System.out.println("KAKNM02 Service postWrite >>> Modify Called...!!");
 			// 예전 태그 지우기
 			kAKNM02DAO.delTag(kAKNM02VO);
 			// 수정하기
@@ -76,6 +82,7 @@ public class KAKNM02Service {
 
 		return tag.length-1;
 	}
+
 
 	// 태그 분리하기
 	public String[] tag(String Stag) {
