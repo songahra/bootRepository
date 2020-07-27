@@ -11,6 +11,7 @@ package com.izt.knm;
 
 public class KAKNM01VO {
 	private String question_id;
+	private String up_question_id;
 	private String requestion_id;
 	private String project_id;
 	private String answer_id;
@@ -45,6 +46,8 @@ public class KAKNM01VO {
 	private String term;
 	private String solution_name;
 	private String flag;
+	private String time;
+
 
 	// 프로젝트 조회
 	private String project_name;
@@ -64,6 +67,12 @@ public class KAKNM01VO {
 	}
 	public void setQuestion_id(String question_id) {
 		this.question_id = question_id;
+	}
+	public String getUp_question_id() {
+		return up_question_id;
+	}
+	public void setUp_question_id(String up_question_id) {
+		this.up_question_id = up_question_id;
 	}
 	public String getRequestion_id() {
 		return requestion_id;
@@ -256,6 +265,12 @@ public class KAKNM01VO {
 	}
 	public void setFlag(String flag) {
 		this.flag = flag;
+	}
+	public String getTime() {
+		return time;
+	}
+	public void setTime(String time) {
+		this.time = time;
 	}
 	public String getProject_name() {
 		return project_name;

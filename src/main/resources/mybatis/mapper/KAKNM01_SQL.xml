@@ -134,6 +134,29 @@
           </choose>
 	</select>
 
+     <select id="srchQuId"  parameterType="String"  resultType="KAKNM01VO">
+		<![CDATA[
+            select 
+                   tq.question_id 
+                 , tq.project_id 
+                 , (select tp.project_name                                  
+                      from tb_project tp 
+                     where tq.project_id = tp.project_id ) as project_name   
+                 , tq.solution_id 
+                 , (select tc.code_content 
+                      from tb_code tc 
+                     where tq.solution_id = tc.code_id ) as solution_name
+                 , tq.title
+                 , (select tu.user_id 
+                      from tb_user tu 
+                      where tu.user_id = ta.reg_userid ) AS reg_userid_ta
+              from tb_question tq
+              left JOIN tb_answer ta
+                on tq.answer_id = ta.answer_id
+             where tq.question_id = #{question_id}
+		]]>
+	</select>
+
 	<select id="getDetail" parameterType="String" resultType="KAKNM01VO">
 		<![CDATA[
            select distinct /* sdk knm/KAKNM01_SQL.xml - getDetail - 지식관리 질문상세보기 */
@@ -142,6 +165,7 @@
                     where tu.user_id = tq.reg_userid ) as reg_userName_tq    /* 작성자 */
                  , tq.reg_userid                                             /* 질문등록자 */   
                  , TO_CHAR(tq.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_tq /* 질문 등록일 */ 
+                 , TO_CHAR((current_timestamp- ta.reg_date ), 'DD') as term  /* 질문등록일/현재시간 차이 */
                  , (select dept
                       from tb_user tu
                      where tu.user_id = tq.reg_userid) as reg_user_dept      /* 작성자 부서 */
@@ -154,6 +178,7 @@
                  , tq.err_log                                                /* 오류로그 */
                  , tq.solution_id                                            /* 솔루션id */
                  , tq.question_id                                            /* 질문 id */
+                 , ta.answer_id                                              /* 답변 id */
                  , ta.answer_id                                              /* 답변 id */
                  , (select tp.project_name                                  
                       from tb_project tp 
@@ -215,13 +240,6 @@
                and customer = #{customer}
           ]]>
           </if>
-	</select>
-     
-     <select id="srchQuId"  parameterType="String" resultType="KAKNM01VO">
-		<![CDATA[ /* sdk knm/KAKNM01_SQL.xml - srchQuId - 지식관리 질문id 조회 */
-            select max(#{question_id}) 
-              from tb_question
-		]]>
 	</select>
 
 	<select id="getMyList" resultType="KAKNM01VO">
@@ -316,6 +334,7 @@
                insert 
                  into tb_question
                     ( question_id
+                    , requestion_id
                     , project_id
                     , reg_userid 
                     , solution_id
@@ -325,6 +344,7 @@
                     , err_log)
                values 
                     ( #{question_id}
+                    , #{requestion_id}
                     , #{project_id}
                     , #{userid}
                     , #{solution_id}
@@ -415,6 +435,17 @@
                  )
 		]]>
 	</insert>
+     
+	<update id="updateReQuInfo" parameterType="KAKNM01VO"> 
+		<![CDATA[
+            update tb_question /* sdk knm/KAKNM01_SQL.xml - updateQuInfo - 지식관리 기술문의 재질문 등록 */
+               set requestion_id = #{question_id}      /* 재질문 id */
+                 , status        = "RQ"                /* 상태 */
+                 , update_userid = #{userid}           /* 수정자 */
+                 , update_date   = current_timestamp   /* 수정일 */
+             where question_id   = #{up_question_id}
+		]]>
+	</update>
 
 	<update id="updateQuInfo" parameterType="KAKNM01VO"> 
 		<![CDATA[
@@ -432,6 +463,56 @@
 		]]>
 	</update>
 
+     <update id="updatetQuScore" parameterType="map"> 
+		<![CDATA[
+            WITH INS1 AS( /* sdk knm/KAKNM01_SQL.xml - updatetQuScore - 지식관리 기술문의 평가하기 */
+               update tb_question 
+                  set score         = #{score}           /* 점수 */ 
+                    , update_userid = #{userid}          /* 수정자 */
+                    , update_date   = current_timestamp  /* 수정일 */                
+               where question_id    = #{question_id}
+            RETURNING question_id, reg_userid
+            )
+               insert 
+                 into tb_point 
+                    ( point_id
+                    , user_id
+                    , point_value
+                    , act_code
+                    , post_type
+                    , post_id
+                    , solution_id)
+               values 
+                    ( CONCAT('PO', TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDDHH24MISSMS'))
+                    , (select reg_userid 
+                         from INS1)
+            ]]>
+            <choose>
+            <when test="time='within'"> 
+          <![CDATA[
+                   , (select tc.code_content::integer
+                      from tb_code tc
+                      where TC.CODE_ID = 'PA020100') /* 1일이내 */
+                   , 'PA020100'
+            ]]>  
+            </when>
+            <otherwise> 
+          <![CDATA[
+                   , (select tc.code_content::integer
+                      from tb_code tc
+                      where TC.CODE_ID = 'PA020200') /* 2일이상 */
+                   , 'PA020200'
+          ]]>  
+           </otherwise>
+           </choose>
+          <![CDATA[
+                    , 'Q'
+                    , (select question_id 
+                         from INS1)
+                    , #{solution_id})
+          ]]>
+	</update>
+
 	<delete id="deleteTagInfo" parameterType="KAKNM01VO"> 
 	     <![CDATA[
              delete /* sdk knm/KAKNM01_SQL.xml - deleteTagInfo - 지식관리 기술문의 태그 삭제 */
@@ -445,17 +526,17 @@
             WITH INS1 AS( /* sdk knm/KAKNM01_SQL.xml - deletetQuInfo - 지식관리 기술문의 삭제 */
 
              update tb_question
-                set display_yn = 'N'
+                set display_yn    = 'N'
                   , update_userid = #{userid}       
-                  , update_date = current_timestamp
-              where question_id = #{question_id}
-                and reg_userid = #{userid} 
+                  , update_date   = current_timestamp
+              where question_id   = #{question_id}
+                and reg_userid    = #{userid} 
 
             RETURNING question_id, reg_userid
             )
               delete  
                 from tb_point
-               where post_id = #{question_id}
+               where post_id  = #{question_id}
                  and act_code = 'PA010000'    /* 기술문의 코드 */
           ]]>
 	</delete>

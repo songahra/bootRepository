@@ -44,15 +44,21 @@ public class KAKNM01DAO {
     }     
 
     // 지식관리 기술문의 질문 id 조회
-    public String srchQuId(String question_id){
+    public KAKNM01VO srchQuId(String question_id){
         System.out.println("KAKNM01DAO srchQuId called...");
         return sqlSession.selectOne(mapperNameSpace+"srchQuId", question_id);
     }
 
-    // 지식관리 기술문의 등록 
+    // 지식관리 기술문의 신규등록 
     public int insertQuInfo(KAKNM01VO kAKNM01VO){
         System.out.println("KAKNM01DAO write called...");
         return sqlSession.insert(mapperNameSpace+"insertQuInfo", kAKNM01VO);
+    }
+
+    // 지식관리 기술문의 재질문 id 수정 
+    public int updateQuInfo(KAKNM01VO kAKNM01VO){
+        System.out.println("KAKNM01DAO write called...");
+        return sqlSession.insert(mapperNameSpace+"updateReQuInfo", kAKNM01VO);
     }
 
     // 지식관리 기술문의 일반태그 등록 
@@ -91,16 +97,22 @@ public class KAKNM01DAO {
         return sqlSession.update(mapperNameSpace+"updateQuInfo", kAKNM01VO);
     }
 
+    // 지식관리 기술문의 답변에 대해 평가하기
+    public int estimateAn(Map<String,Object> map){
+        System.out.println("KAKNM01DAO moify called...");
+        return sqlSession.update(mapperNameSpace+"updatetQuScore", map);
+    }
+
     // 지식관리 내가 문의한 질문 리스트 조회
     public List<KAKNM01VO> getMyList(String userid){
         System.out.println("KAKNM01DAO srchMyList");
-        return  sqlSession.selectList(mapperNameSpace+"getMyList", userid);
+        return sqlSession.selectList(mapperNameSpace+"getMyList", userid);
     }
 
     // 지식관리 내가 문의한 질문 리스트 조건 조회
     public List<KAKNM01VO> srchMyList(Map<String,Object> map){
         System.out.println("KAKNM01DAO srchMyList");
-        return  sqlSession.selectList(mapperNameSpace+"srchMyList", map);
+        return sqlSession.selectList(mapperNameSpace+"srchMyList", map);
     }
 
     // 지식관리 프로젝트 팝업 리스트 조회

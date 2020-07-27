@@ -59,16 +59,27 @@ public class KAKNM01Controller {
         System.out.println("get list : " + list.toString());
         return list;
     }
+
+    /**
+    * 지식관리 기술문의 질문 id 조회
+    * @param String
+    * @return KAKNM01VO
+    * @exception 
+    */
+    @GetMapping(value="srchQuId")
+    public KAKNM01VO srchQuId(@RequestParam(value="question_id") String question_id){
+        System.out.println("KAKNM01DAO srchQuId called...");
+        return kAKNM01Service.srchQuId(question_id);
+    }
     
-     /**
+    /**
     * 지식관리 기술문의 상세보기
     * @param String
     * @return KAKNM01VO
     * @exception 
     */
     @GetMapping(value="getDetail")
-    public KAKNM01VO getDetail(
-                               @RequestParam(value="question_id") String question_id){
+    public KAKNM01VO getDetail(@RequestParam(value="question_id") String question_id){
         System.out.println("KAKNM01Controller getDetail Method called..");
         System.out.println("question_id : " + question_id);
 
@@ -103,6 +114,22 @@ public class KAKNM01Controller {
         }
 
         System.out.println("kAKNM01VO => " + kAKNM01VO.toString());
+        
+        return result;
+    }
+
+    /**
+    * 지식관리 기술문의 답변에 대해 평가하기
+    * @param KAKNM01VO
+    * @return int
+    * @exception 
+    */
+    @PostMapping(value="estimateAn")
+    public int estimateAn(@RequestBody KAKNM01VO kAKNM01VO){
+        int result = 0;
+        System.out.println("KAKNM01Controller estimateAn Method called..");
+
+        result = kAKNM01Service.estimateAn(kAKNM01VO);     
         
         return result;
     }

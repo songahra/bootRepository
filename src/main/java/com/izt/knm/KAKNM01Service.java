@@ -45,6 +45,12 @@ public class KAKNM01Service {
         return kAKNM01DAO.srchList(kAKNM01VO);
     }
 
+    // 지식관리 기술문의 질문 id 조회
+    public KAKNM01VO srchQuId(String question_id){
+        System.out.println("KAKNM01DAO srchQuId called...");
+        return kAKNM01DAO.srchQuId(question_id);
+    }
+
     // 상세조회
     public KAKNM01VO getDetail(String question_id) {
         System.out.println("KAKNM01Service getDetail");
@@ -56,16 +62,41 @@ public class KAKNM01Service {
     public int write(KAKNM01VO kAKNM01VO) {
        System.out.println("KAKNM01Service write..");
        try {
-         // user_id
-         String user_id = kAKNM01VO.getUserid();
+         int result = 0;
+         String user_id ="";
+         String setSubject="";
+         String setBody="";
+         
          // PK id값생성
          String question_id = createTbIdService.createPkId("QU");
          kAKNM01VO.setQuestion_id(question_id);
          
-         // 질문 등록  
-         int result = 0;
-         result = kAKNM01DAO.insertQuInfo(kAKNM01VO);
- 
+         // 재질문등록시 원질문 id
+         String up_question_id = kAKNM01VO.getUp_question_id();
+         String title =kAKNM01VO.getTitle();
+
+         // 질문 등록
+         if(up_question_id != null || up_question_id.trim() != null || up_question_id.equals(true)){
+            // 재질문등록
+            System.out.println("재질문등록일때 => "+ up_question_id);
+            kAKNM01DAO.updateQuInfo(kAKNM01VO);
+            result = kAKNM01DAO.insertQuInfo(kAKNM01VO);
+            
+            // 답변자에게 알림메일 발송
+            user_id    = kAKNM01VO.getReg_userid_ta();
+            System.out.println("재질문등록일때 답변자 이메일=> "+ user_id);
+            setSubject = "[솔루션지식자산화시스템] 회원님의 답변에 대해 재질문처리가 되었습니다.";
+            setBody    = "안녕하세요. 솔루션지식자산화시스템입니다. <br />" 
+                         + "회원님의 답변이 재질문처리가 되었습니다 <br />"
+                         + "재질문의 글 제목은 " + title +" 입니다 <br />"
+                         + "확인부탁드립니다. 감사합니다.";
+            sendMail(setSubject, setBody, user_id)  ;
+
+         } else{
+            // 신규등록  
+            result = kAKNM01DAO.insertQuInfo(kAKNM01VO);
+         }
+
          // 일반 태그 등록
          String [] tag = spiltTag(kAKNM01VO.getTag_tag());
          System.out.println("tag 수 => "+ tag.length);
@@ -88,35 +119,34 @@ public class KAKNM01Service {
          }
          Map<String,Object> map = new HashMap<String,Object>();
          
-         if( tag_erc != null || tag_erc.trim() != null || tag_erc.equals(true)){
-             map.put("tag_id",createTbIdService.createPkId("TG"));
+         if(tag_erc != "" || tag_erc.trim() != "" || tag_erc.equals(true)){
+             map.put("tag_id", createTbIdService.createPkId("TG"));
              map.put("question_id", question_id);
              map.put("tag_value", kAKNM01VO.getTag_erc());
              System.out.println("tag_erc map1tag_erc???? => " + map);
              
-             result = kAKNM01DAO.insertErcTag(map);
+             kAKNM01DAO.insertErcTag(map);
              System.out.println("tag_erc의 / " + result);
  
          } 
-         if(tag_ert != null || tag_ert.trim() != null || tag_ert.equals(true)){
+         if(tag_ert != "" || tag_ert.trim() != "" || tag_ert.equals(true)){
              map.put("tag_id",createTbIdService.createPkId("TG"));
              map.put("question_id", question_id);
              map.put("tag_value", kAKNM01VO.getTag_ert());
              System.out.println("tag_ert map2???? => " + map);
              
-             result = kAKNM01DAO.insertErtTag(map);
+             kAKNM01DAO.insertErtTag(map);
              System.out.println("tag_ert의 / "+result);
 
          }
-         // 메일 전송
-         EmailMessage emailMessage = new EmailMessage();
-         emailMessage.setBody("안녕하세요. 솔루션지식자산화시스템입니다. <br />" + "회원님의 기술문의 등록이 처리 되었습니다 <br />"
-         + "이용해 주셔서 감사합니다");
-         
-         emailMessage.setSubject("[솔루션지식자산화시스템] 회원님의 기술문의가 등록되었습니다.");
-         emailMessage.setTo_address(user_id); //user 이메일 user_id로 바꿔야함
-         mailService.sendmail(emailMessage);//메일 발송        
-
+         // 질문자에게 알림메일 발송
+         user_id    = kAKNM01VO.getUserid();
+         setSubject = "[솔루션지식자산화시스템] 회원님의 기술문의가 등록되었습니다.";
+         setBody    = "안녕하세요. 솔루션지식자산화시스템입니다. <br />" 
+                      + "회원님의 기술문의 등록이 처리 되었습니다 <br />"
+                      + "이용해 주셔서 감사합니다";
+         System.out.println("질문등록일때 답변자 이메일=> "+ user_id);
+         sendMail(setSubject, setBody, user_id);
 
          return result;
 
@@ -135,7 +165,25 @@ public class KAKNM01Service {
         String [] arr = t2.split("#");
         System.out.println("arr!!!!!!!!!!!!!!"+ arr);
 		return arr;
-	}
+    }
+    
+    // 메일전송
+    public void sendMail(String setSubject, String setBody, String user_id){
+        try {
+         // 메일 전송
+         EmailMessage emailMessage = new EmailMessage();
+         emailMessage.setBody(setBody);
+         
+         emailMessage.setSubject(setSubject);
+         emailMessage.setTo_address(user_id); //user 이메일 user_id로 바꿔야함
+
+         mailService.sendmail(emailMessage); //메일 발송  
+            
+        } catch (Exception e) {
+            //TODO: handle exception
+          e.printStackTrace();
+        }
+    }
 
     // 지식관리 질문 삭제 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
@@ -218,6 +266,18 @@ public class KAKNM01Service {
        } catch (Exception e) {
          return 0;
        } 
+    }
+
+    // 지식관리 기술문의 답변에 대해 평가하기
+    public int estimateAn(KAKNM01VO kAKNM01VO) {
+        System.out.println("KAKNM01Service estimateAn");
+        String question_id = kAKNM01VO.getQuestion_id();
+        int score = kAKNM01VO.getScore();
+
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("question_id", question_id);
+        map.put("score", score);
+        return kAKNM01DAO.estimateAn(map);
     }
 
     // 지식관리 내가 문의한 질문 메인화면

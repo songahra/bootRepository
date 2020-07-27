@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kAADM02">
+   <select id="allUserList" resultType="KAADM02VO">
+      <![CDATA[
+        select /* sdk knm/KAADM02_SQL.xml - allUserList - 사용자정보 */
+               user_id                             /* 이메일  */
+             , user_name                           /* 사용자명 */
+             , user_pw                             /* 비밀번호  */
+             , COALESCE(company,'--') AS company   /* 소속회사  */
+             , user_type                           /* 권한그룹  */
+             , COALESCE(solution,'--') AS solution /* 담당솔루션  */
+             , COALESCE(dept,'--') AS dept         /* 부서명  */
+             , use_yn                              /* 사용여부 */
+             , reg_date   
+             , COALESCE(TO_CHAR(update_date, 'YYYY-MM-DD HH24:MI'),'--') AS update_date  /* 수정일 */
+             , login_lock                          /* 로그인 실패 */ 
+          from tb_user tu
+      ]]>
+   </select>
+
+    <select id="srchUserList" parameterType="map" resultType="KAADM02VO">
+      <![CDATA[
+        select /* sdk knm/KAADM02_SQL.xml - srchUserList - 사용자정보 조회 */
+               user_id                             /* 이메일  */
+             , user_name                           /* 사용자명 */
+             , user_pw                             /* 비밀번호  */
+             , COALESCE(company,'--') AS company   /* 소속회사  */
+             , user_type                           /* 권한그룹  */
+             , COALESCE(solution,'--') AS solution /* 담당솔루션  */
+             , COALESCE(dept,'--') AS dept         /* 부서명  */
+             , use_yn                              /* 사용여부 */
+             , reg_date   
+             , COALESCE(TO_CHAR(update_date, 'YYYY-MM-DD HH24:MI'),'--') AS update_date  /* 수정일 */
+             , login_lock                          /* 로그인 실패 */ 
+          from tb_user 
+         where 1=1
+      ]]>
+      <if test='user_id != "" and user_id != null '> 
+      <![CDATA[
+	        and user_id like '%'||#{user_id}||'%'
+        ]]>
+      </if>
+      <if test='user_name != "" and user_name != null '> 
+      <![CDATA[
+	        and user_name like'%'||#{user_name}||'%'
+        ]]>
+      </if>
+      <if test='company != "" and company != null '> 
+      <![CDATA[
+	        and company like '%'||#{company}||'%'
+        ]]>
+      </if>
+   </select>
+
+    <update id="updateUserInfo" parameterType="KAADM02VO">
+      <![CDATA[
+        update tb_user /* sdk knm/KAADM02_SQL.xml - updateUserInfo - 사용자정보 수정 */
+           set
+               user_id     = #{user_id}        /* 이메일  */
+             , user_name   = #{user_name}      /* 사용자명 */
+             , user_pw     = #{user_pw}        /* 비밀번호  */
+             , company     = #{company}        /* 소속회사  */
+             , user_type   = #{user_type}      /* 권한그룹  */
+             , solution    = #{solution}       /* 담당솔루션  */
+             , dept        = #{dept}           /* 부서명  */
+             , use_yn      = #{use_yn}         /* 사용여부 */
+             , update_date = current_timestamp /* 수정일 */
+             , login_lock  /* 로그인 실패 */
+          from tb_user tu
+      ]]>
+   </update>
+
+   
+</mapper>
