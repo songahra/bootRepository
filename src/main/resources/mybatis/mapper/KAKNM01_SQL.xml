@@ -182,7 +182,7 @@
                  , tq.solution_id                                            /* 솔루션id */
                  , tq.question_id                                            /* 질문 id */
                  , ta.answer_id                                              /* 답변 id */
-                 , ta.reg_userid as reg_userid_a                             /* 답변등록자 id */
+                 , ta.reg_userid as reg_userid_ta                             /* 답변등록자 id */
                  , (select tp.project_name                                  
                       from tb_project tp 
                      where tq.project_id = tp.project_id ) as project_name   /* 프로젝트 명 */
