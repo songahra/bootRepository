@@ -103,7 +103,8 @@
             (select concat('#', string_agg(tt.tag_value, ' #')) 
                               from tb_tag tt 
                               where TT.post_id = ta.answer_id 
-                              and TT.tag_type = 'TAG') as content_t 
+                              and TT.tag_type = 'TAG') as content_t,
+            tq.reg_userid as reg_userid_tq 
          from tb_answer ta , tb_question tq 
          where ta.answer_id = #{answer_id} and tq.answer_id = ta.answer_id ;
       ]]>
