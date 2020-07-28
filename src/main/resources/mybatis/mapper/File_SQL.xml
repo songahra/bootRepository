@@ -12,7 +12,10 @@
     <select id="getList" parameterType="map" resultType="FileVo">
     <![CDATA[
         select tf.file_id as file_id, 
-               tf.org_file_name as org_file_name
+               tf.org_file_name as org_file_name,
+               tf.file_size as file_size,
+               tf.file_ext_name as file_ext_name,
+               tf.save_file_name as save_file_name
         from tb_file tf 
         where tf.post_id = #{postId}   
     ]]>

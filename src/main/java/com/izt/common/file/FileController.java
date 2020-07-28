@@ -9,12 +9,20 @@
  */
 package com.izt.common.file;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,5 +58,31 @@ public class FileController {
     public List<FileVo> getList(@RequestParam(value="postId") String postId){
         List<FileVo> FileVo = fileCommon.getList(postId);
         return FileVo;
+    }
+
+    // 도윤
+    // 파일 다운로드
+    @PostMapping(value="download")
+    public void download(HttpServletResponse response,
+                        @RequestBody String fileSName) {
+        String fileName = fileSName.substring(0, fileSName.length()-1);
+        System.out.println("download called : "+fileName);
+
+        try {
+            File file = new File("src\\main\\java\\com\\izt\\common\\file\\fileStore\\"+fileName); // 경로에서 파일을 가져온다.
+            Files.copy(file.toPath(), response.getOutputStream()); // 파일 복사.
+            String mimeType = URLConnection.guessContentTypeFromName(file.getName()); // 파일 타입을 가져온다
+            String contentDisposition = String.format("attachment; filename=%s", file.getName()); // 셋팅중 하나....ㅎㅎ
+            int fileSize = Long.valueOf(file.length()).intValue();
+            
+            response.setContentType(mimeType);
+            System.out.println(response.getContentType());
+            response.setHeader("Content-Disposition", contentDisposition); // 
+            response.setContentLength(fileSize);
+        }catch (FileNotFoundException e) {
+            System.out.println(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
