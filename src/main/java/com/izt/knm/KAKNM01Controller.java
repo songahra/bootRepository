@@ -126,12 +126,19 @@ public class KAKNM01Controller {
     */
     @PostMapping(value="estimateAn")
     public int estimateAn(@RequestBody KAKNM01VO kAKNM01VO){
-        int result = 0;
-        System.out.println("KAKNM01Controller estimateAn Method called..");
+        try {
+            int result = 0;
+            System.out.println("KAKNM01Controller estimateAn Method called..");
+            System.out.println("kAKNM01VO cc=> " + kAKNM01VO.toString());
+    
+            result = kAKNM01Service.estimateAn(kAKNM01VO);     
+            
+            return result;
 
-        result = kAKNM01Service.estimateAn(kAKNM01VO);     
-        
-        return result;
+        } catch (Exception e) {
+            //TODO: handle exception
+            return 0;
+        }
     }
 
     /**

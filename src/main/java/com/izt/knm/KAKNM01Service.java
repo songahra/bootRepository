@@ -76,7 +76,7 @@ public class KAKNM01Service {
          String title =kAKNM01VO.getTitle();
 
          // 질문 등록
-         if(up_question_id != null || up_question_id.trim() != null || up_question_id.equals(true)){
+         if(up_question_id != ""  || up_question_id.trim() != "" || up_question_id.equals(true)){
             // 재질문등록
             System.out.println("재질문등록일때 => "+ up_question_id);
             kAKNM01DAO.updateQuInfo(kAKNM01VO);
@@ -136,7 +136,7 @@ public class KAKNM01Service {
              System.out.println("tag_ert map2???? => " + map);
              
              kAKNM01DAO.insertErtTag(map);
-             System.out.println("tag_ert의 / "+result);
+             System.out.println("tag_ert의 / "+ result);
 
          }
          // 질문자에게 알림메일 발송
@@ -145,7 +145,7 @@ public class KAKNM01Service {
          setBody    = "안녕하세요. 솔루션지식자산화시스템입니다. <br />" 
                       + "회원님의 기술문의 등록이 처리 되었습니다 <br />"
                       + "이용해 주셔서 감사합니다";
-         System.out.println("질문등록일때 답변자 이메일=> "+ user_id);
+         System.out.println("질문등록일때 질문자 이메일=> "+ user_id);
          sendMail(setSubject, setBody, user_id);
 
          return result;
@@ -273,10 +273,14 @@ public class KAKNM01Service {
         System.out.println("KAKNM01Service estimateAn");
         String question_id = kAKNM01VO.getQuestion_id();
         int score = kAKNM01VO.getScore();
+        String solution_id = kAKNM01VO.getSolution_id();
+        String time = kAKNM01VO.getTime();
 
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("question_id", question_id);
         map.put("score", score);
+        map.put("solution_id", solution_id);
+        map.put("time", time);
         return kAKNM01DAO.estimateAn(map);
     }
 

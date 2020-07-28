@@ -69,6 +69,7 @@
                  , tq.question_id
                  , tq.reg_userid
                  , tq.answer_id
+                 , ta.reg_userid
               from tb_question tq
               left JOIN tb_answer ta
                 on tq.answer_id = ta.answer_id
@@ -105,7 +106,7 @@
                and tt.tag_value like '%'||#{tag_ert}||'%'
           ]]>
           </if>
-                    <choose> 
+          <choose> 
           <when test="sortType = '1'"> 
           <![CDATA[
               order by tq.reg_userid asc
@@ -163,13 +164,15 @@
                   (select tu.user_name 
                      from tb_user tu 
                     where tu.user_id = tq.reg_userid ) as reg_userName_tq    /* 작성자 */
-                 , tq.reg_userid                                             /* 질문등록자 */   
+                 , tq.reg_userid                                             /* 질문등록자 id*/   
                  , TO_CHAR(tq.reg_date, 'YYYY-MM-DD HH24:MI') AS reg_date_tq /* 질문 등록일 */ 
                  , TO_CHAR((current_timestamp- ta.reg_date ), 'DD') as term  /* 질문등록일/현재시간 차이 */
                  , (select dept
                       from tb_user tu
                      where tu.user_id = tq.reg_userid) as reg_user_dept      /* 작성자 부서 */
-                 , tq.status                                                 /* 상태  */
+                 , (case when tq.status = 'SS' then '완료'
+                         when tq.status = 'RQ' then '재질문' 
+                         when tq.status = 'NN' then '미완료' end) AS status   /* 상태  */
                  , tq.score                                                  /* 점수 */
                  , tq.project_id                                             /* 프로젝트 id */
                  , tq.title                                                  /* 질문 제목 */
@@ -179,7 +182,7 @@
                  , tq.solution_id                                            /* 솔루션id */
                  , tq.question_id                                            /* 질문 id */
                  , ta.answer_id                                              /* 답변 id */
-                 , ta.answer_id                                              /* 답변 id */
+                 , ta.reg_userid as reg_userid_a                             /* 답변등록자 id */
                  , (select tp.project_name                                  
                       from tb_project tp 
                      where tq.project_id = tp.project_id ) as project_name   /* 프로젝트 명 */
@@ -225,19 +228,14 @@
               from tb_project
              where 1=1 
 		]]>
-          <if test='project_id != "" and project_id != null '> 
-          <![CDATA[
-               and project_id = #{project_id}
-          ]]>
-          </if>
           <if test='project_name != "" and project_name != null '> 
           <![CDATA[
-               and project_name = #{project_name}
+               and project_name like '%'||#{project_name}||'%'
           ]]>
           </if>
           <if test='customer != "" and customer != null '> 
           <![CDATA[
-               and customer = #{customer}
+               and customer like '%'||#{customer}||'%'
           ]]>
           </if>
 	</select>
@@ -315,7 +313,7 @@
 		]]>
           <if test=' title!= "" and title != null '> 
           <![CDATA[
-               and tq.title = #{title}
+               and tq.title like '%'||#{title}||'%'
           ]]>
           </if>
           <if test='status != "" and status != null '> 
