@@ -31,7 +31,6 @@ public class KANTI01Controller {
         
         System.out.println("공지사항 등록 컨트롤러 도착");
         System.out.println("공지사항 등록 컨트롤러 도착 KANTI01VO는?" + KANTI01VO);
-        System.out.println("KANTI01VO?" + KANTI01VO.getAttachFile().length);
         KANTI01Service.writeNotice(KANTI01VO);
         
     }

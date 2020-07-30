@@ -17,8 +17,7 @@ public class KANTI01VO {
     public String post_type;
     public int file_count;
     public String user_name;
-
-
+    
     public String getNotice_id() {
         return notice_id;
     }
@@ -115,12 +114,27 @@ public class KANTI01VO {
         this.post_type = post_type;
     }
 
+    public int getFile_count() {
+        return file_count;
+    }
+
+    public void setFile_count(int file_count) {
+        this.file_count = file_count;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
     @Override
     public String toString() {
         return "KANTI01VO [notice_id=" + notice_id + ", reg_userid=" + reg_userid + ", update_userid=" + update_userid
                 + ", solution_code=" + solution_code + ", title=" + title + ", content=" + content + ", reg_date="
                 + reg_date + ", update_date=" + update_date + ", display_yn=" + display_yn + ", hit=" + hit
-                + ", post_type=" + post_type + "]";
+                + ", post_type=" + post_type + ", file_count=" + file_count + ", user_name=" + user_name + "]";
     }
-
 }
