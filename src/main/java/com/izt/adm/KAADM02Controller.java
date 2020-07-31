@@ -70,4 +70,35 @@ public class KAADM02Controller {
         return list;
     }
 
+    /**
+    * 설정 관한관리 사용자정보 삭제/수정
+    * @param KAKNM01VO
+    * @return void
+    * @exception 
+    */
+    @PostMapping(value="modify")
+    public int modify(@RequestBody List<KAADM02VO> list){
+        System.out.println("KAKNM01Controller modify Method called..");
+        System.out.println("KAADM02VO => " + list);
+        
+        int result = kAADM02Service.modify(list);
+
+        return result;
+    }  
+
+    /**
+    * 설정 관한관리 사용자정보 삭제/수정
+    * @param KAKNM01VO
+    * @return void
+    * @exception 
+    */
+    @PostMapping(value="delete")
+    public int delete(@RequestBody List<KAADM02VO> list){
+        System.out.println("KAKNM01Controller modify Method called..");
+        System.out.println("KAADM02VO => " + list);
+        
+        int result = kAADM02Service.delete(list);
+
+        return result;
+    }  
 }

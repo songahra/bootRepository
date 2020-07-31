@@ -328,19 +328,21 @@ public class KAKNM01VO {
 	}
 	@Override
 	public String toString() {
-		return "dd [question_id=" + question_id + ", requestion_id=" + requestion_id + ", project_id=" + project_id
-				+ ", answer_id=" + answer_id + ", reg_userid=" + reg_userid + ", update_userid=" + update_userid
-				+ ", solution_id=" + solution_id + ", title=" + title + ", content_q=" + content_q + ", content_s="
-				+ content_s + ", err_log=" + err_log + ", reg_date=" + reg_date + ", update_date=" + update_date
-				+ ", score=" + score + ", status=" + status + ", hit=" + hit + ", display_yn=" + display_yn
-				+ ", rowNum=" + rowNum + ", userid=" + userid + ", tag=" + tag + ", reg_userName_tq=" + reg_userName_tq
-				+ ", reg_userid_tq=" + reg_userid_tq + ", reg_date_tq=" + reg_date_tq + ", reg_userName_ta="
-				+ reg_userName_ta + ", reg_userid_ta=" + reg_userid_ta + ", reg_date_ta=" + reg_date_ta + ", tag_tag="
-				+ tag_tag + ", tag_erc=" + tag_erc + ", tag_ert=" + tag_ert + ", sortType=" + sortType + ", term="
-				+ term + ", solution_name=" + solution_name + ", flag=" + flag + ", project_name=" + project_name
-				+ ", customer=" + customer + ", reg_date_st=" + reg_date_st + ", reg_date_ed=" + reg_date_ed
-				+ ", post_type=" + post_type + ", post_id=" + post_id + ", tag_type=" + tag_type + ", tag_value="
-				+ tag_value + ", tag_id=" + tag_id +"]";
+		return "dd [question_id=" + question_id + ", up_question_id=" + up_question_id + ", requestion_id="
+				+ requestion_id + ", project_id=" + project_id + ", answer_id=" + answer_id + ", reg_userid="
+				+ reg_userid + ", update_userid=" + update_userid + ", solution_id=" + solution_id + ", title=" + title
+				+ ", content_q=" + content_q + ", content_s=" + content_s + ", err_log=" + err_log + ", reg_date="
+				+ reg_date + ", update_date=" + update_date + ", score=" + score + ", status=" + status + ", hit=" + hit
+				+ ", display_yn=" + display_yn + ", rowNum=" + rowNum + ", userid=" + userid + ", tag=" + tag
+				+ ", reg_userName_tq=" + reg_userName_tq + ", reg_userid_tq=" + reg_userid_tq + ", reg_date_tq="
+				+ reg_date_tq + ", reg_userName_ta=" + reg_userName_ta + ", reg_userid_ta=" + reg_userid_ta
+				+ ", reg_date_ta=" + reg_date_ta + ", tag_tag=" + tag_tag + ", tag_erc=" + tag_erc + ", tag_ert="
+				+ tag_ert + ", sortType=" + sortType + ", term=" + term + ", solution_name=" + solution_name + ", flag="
+				+ flag + ", time=" + time + ", project_name=" + project_name + ", customer=" + customer
+				+ ", reg_date_st=" + reg_date_st + ", reg_date_ed=" + reg_date_ed + ", post_type=" + post_type
+				+ ", post_id=" + post_id + ", tag_type=" + tag_type + ", tag_value=" + tag_value + ", tag_id=" + tag_id
+				+ ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString()
+				+ "]";
 	}
 }
 

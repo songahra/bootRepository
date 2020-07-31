@@ -35,6 +35,18 @@ public class KAADM02DAO {
     public List<KAADM02VO> srchUserList(Map<String, Object> map){
         System.out.println("KAKNM01DAO srchUserList called...");
         return sqlSession.selectList(mapperNameSpace+"srchUserList", map);
+    } 
+
+    // 유저정보 수정
+    public int updateUserInfo(List<KAADM02VO> list){
+        System.out.println("KAKNM01DAO updateUserInfo called...");
+        return sqlSession.update(mapperNameSpace+"updateUserInfo", list);
+    }
+
+    // 유저정보 삭제
+    public int deleteUserInfo(List<KAADM02VO> list){
+        System.out.println("KAKNM01DAO deleteUserInfo called...");
+        return sqlSession.update(mapperNameSpace+"deleteUserInfo", list);
     }
 
 }

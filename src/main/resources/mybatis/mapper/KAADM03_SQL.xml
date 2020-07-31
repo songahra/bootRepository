@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kAADM03">
+   <select id="codeList" resultType="KAADM03VO">
+      <![CDATA[
+        select /* sdk adm/KAADM03.xml - allCodeList - 코드정보 */ 
+               tc.code_name         /* 코드명 */
+             , tc.code_id           /* 코드ID */
+             , tc.code_type         /* 유형  */  
+             , tc.code_content      /* 코드값 */
+             , tc.code_explain      /* 코드값 내용 */
+             , tc.code_up_id        /* 상위 CODE ID */
+             , tc.code_order        /* 정렬순서 */
+             , tc.code_display_yn   /* 사용여부 */
+             , TO_CHAR(tc.update_date, 'YYYY-MM-DD HH24:MI') as update_date/* 수정일시 */
+         from tb_code tc 
+        order by tc.code_name
+      ]]>
+   </select>
+
+    <select id="srchCodeList" parameterType="map" resultType="KAADM03VO">
+      <![CDATA[
+        select /* sdk adm/KAADM03.xml - srchCodeList - 코드정보 조회 */ 
+               tc.code_name         /* 코드명 */
+             , tc.code_id           /* 코드ID */
+             , tc.code_type         /* 유형  */  
+             , tc.code_content       /* 코드값 */
+             , tc.code_explain      /* 코드값 내용 */
+             , tc.code_up_id        /* 상위 CODE ID */
+             , tc.code_order        /* 정렬순서 */
+             , tc.code_display_yn   /* 사용여부 */
+             , TO_CHAR(tc.update_date, 'YYYY-MM-DD HH24:MI') as update_date /* 수정일시 */
+          from tb_code tc
+         where 1=1
+      ]]>
+      <if test='code_name != "" and code_name != null '> 
+      <![CDATA[
+	        and tc.code_name like '%'||#{code_name}||'%'
+        ]]>
+      </if>
+      <if test='code_id != "" and code_id != null '> 
+      <![CDATA[
+	        and tc.code_id like'%'||#{code_id}||'%'
+        ]]>
+      </if>
+      <if test='code_content != "" and code_content != null '> 
+      <![CDATA[
+	        and tc.code_content like '%'||#{code_content}||'%'
+        ]]>
+      </if>
+   </select>
+
+   <insert id="insertCodeInfo" parameterType="java.util.List">
+      <foreach collection="list" item="item" separator=";">
+      <![CDATA[
+        insert  /* sdk adm/KAADM03.xml - insertCodeInfo - 코드정보 등록 */
+          into tb_code tc
+             ( tc.code_name        /* 코드명 */
+             , tc.code_id          /* 코드ID */
+             , tc.code_type        /* 유형  */  
+             , tc.code_content     /* 코드값 */
+             , tc.code_explain     /* 코드값 내용 */
+             , tc.code_up_id       /* 상위 CODE ID */
+             , tc.code_order       /* 정렬순서 */
+             , tc.code_display_yn  /* 사용여부 */
+             , tc.reg_userid       /* 등록자 */
+             , tc.reg_date)        /* 등록일시 */
+        values
+            ( #{item.code_name}
+            , #{item.code_id} 
+            , #{item.code_type}
+            , #{item.code_content}
+            , #{item.code_explain}
+            , #{item.code_up_id}
+            , #{item.code_order}
+            , #{item.code_display_yn} 
+            , ##{item.userid} 
+            , currnet_timestamp )    
+      ]]>
+      </foreach>
+   </insert>
+
+    <update id="updateCodeInfo" parameterType="java.util.List">
+      <foreach collection="list" item="item" separator=";">
+      <![CDATA[
+        update tb_code tc /* sdk adm/KAADM03.xml - updateCodeInfo - 코드정보 수정 */
+           set 
+               tc.code_name       = #{item.code_name}       /* 코드명 */
+             , tc.code_id         = #{item.code_id}         /* 코드ID */
+             , tc.code_type       = #{item.code_type}       /* 유형  */  
+             , tc.code_content    = #{item.code_content}    /* 코드값 */
+             , tc.code_explain    = #{item.code_explain}    /* 코드값 내용 */
+             , tc.code_up_id      = #{item.code_up_id}      /* 상위 CODE ID */
+             , tc.code_order      = #{item.code_order}      /* 정렬순서 */
+             , tc.code_display_yn = #{item.code_display_yn} /* 사용여부 */
+             , tc.update_userid   = #{item.userid}          /* 수정자 */
+             , tc.update_date     = currnet_timestamp       /* 수정일시 */
+         where tc.code_id         = #{item.code_id} 
+      ]]>
+      </foreach>
+   </update>
+   
+    <delete id="deleteCodeInfo" parameterType="java.util.List">
+      <foreach collection="list" item="item" separator=";">
+      <![CDATA[
+        delete /* sdk adm/KAADM03.xml - deleteCodeInfo - 코드정보 삭제 */
+          from tb_code tc 
+         where tc.code_id = #{item.code_id} 
+      ]]>
+      </foreach>
+   </delete>
+   
+   
+</mapper>
