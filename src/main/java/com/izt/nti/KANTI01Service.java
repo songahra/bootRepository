@@ -48,4 +48,21 @@ public class KANTI01Service {
         List<KANTI01VO> list = KANTI01DAO.selectNotice();
         return list; 
     }
+
+    //조회버튼 눌렀을 때 공지사항 글 목록 조회
+    public List<KANTI01VO> searchNotice(KANTI01DTO KANTI01DTO){
+        List<KANTI01VO> list = KANTI01DAO.searchNotice(KANTI01DTO);
+        return list; 
+    }
+   
+    //조회수 +1 
+    public void plusCnt(String notice_id){
+        System.out.println("plusCnt서비스 도착");
+        KANTI01DAO.plusCnt(notice_id);
+    }
+
+    // 상세보기
+    public KANTI01VO detailNotice(String notice_id) {
+        return KANTI01DAO.detailNotice(notice_id);
+    }
 }

@@ -25,4 +25,23 @@ public class KANTI01DAO {
         List<KANTI01VO> list = sqlSession.selectList("selectNotice");
         return list;
     }
+
+    // 공지사항 조회
+    public List<KANTI01VO> searchNotice(KANTI01DTO KANTI01DTO) {
+        System.out.println("selectNotice 다오 도착");
+        List<KANTI01VO> list = sqlSession.selectList("searchNotice", KANTI01DTO);
+        return list;
+    }
+
+    // 조회수 +1 
+    public void plusCnt(String notice_id){
+        System.out.println("plusCnt 다오 도착");
+        sqlSession.update("plusCnt", notice_id);
+    }
+
+    // 상세보기
+    public KANTI01VO detailNotice(String notice_id) {
+        System.out.println("detailNotice 다오 도착");
+        return sqlSession.selectOne("detailNotice", notice_id);
+    }
 }

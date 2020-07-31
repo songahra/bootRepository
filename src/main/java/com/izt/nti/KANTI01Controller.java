@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -42,10 +43,34 @@ public class KANTI01Controller {
       return list;
     }
 
-    // 공지사항 상세보기 
-    // @GetMapping(value="detail")
-    // public KANTI01VO detailNotice() {
+    // 공지사항 목록 조회
+    @GetMapping(value = "searchList")
+    public List<KANTI01VO> searchNotice(@RequestParam(value ="search_title") String search_title,
+                                        @RequestParam(value="sortType")String sortType) {
+      KANTI01DTO KANTI01DTO = new KANTI01DTO();
+      KANTI01DTO.setSortType(sortType);
+      KANTI01DTO.setSearch_title(search_title);
+      
+      System.out.println("컨트롤러 도착" + KANTI01DTO.toString());
 
-    // }
+      List<KANTI01VO> list = KANTI01Service.searchNotice(KANTI01DTO);
+
+      System.out.println("list?????"+ list.toString());
+      return list;
+    }
+
+    // 조회수 +1
+    @GetMapping(value="plusCnt")
+    public void getMethodName(@RequestParam(value = "notice_id") String notice_id) {
+        KANTI01Service.plusCnt(notice_id);
+    }
+
+    // 공지사항 상세보기
+    @GetMapping(value = "detail")
+    public KANTI01VO detailNotice(@RequestParam(value = "notice_id") String notice_id) {
+      System.out.println("detailNotice called..notice_id?" + notice_id);
+      return KANTI01Service.detailNotice(notice_id);
+    }
+    
     
 }
