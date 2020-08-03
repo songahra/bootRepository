@@ -20,4 +20,10 @@
         where tf.post_id = #{postId}   
     ]]>
     </select>
+
+    <select id="delete" parameterType="map">
+        <![CDATA[
+            delete from tb_file where file_id = #{file_id}
+        ]]>
+    </select>
 </mapper>

@@ -33,4 +33,9 @@ public class FileDao {
         map.put("postId", postId);
         return sqlSession.selectList("File.getList", map);
 	}
+	public void delFile(String file_id) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("file_id", file_id);
+        sqlSession.delete("File.delete", map);
+	}
 }

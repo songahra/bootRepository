@@ -60,7 +60,14 @@ public class FileController {
         return FileVo;
     }
 
-    // 도윤
+    @GetMapping(value="del")
+    public void delFile(@RequestParam(value="fileId") String file_id,
+                        @RequestParam(value="fileName") String file_name){
+        System.out.println("file controller!! <<file_id>> : " + file_id);
+        System.out.println("file controller!! <<file_name>> : " + file_name);
+        fileCommon.delFile(file_id, file_name);
+    }
+
     // 파일 다운로드
     @PostMapping(value="download")
     public void download(HttpServletResponse response,
@@ -85,4 +92,6 @@ public class FileController {
             e.printStackTrace();
         }
     }
+    
+
 }
