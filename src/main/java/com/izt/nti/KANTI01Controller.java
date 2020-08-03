@@ -15,6 +15,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,6 +72,22 @@ public class KANTI01Controller {
       System.out.println("detailNotice called..notice_id?" + notice_id);
       return KANTI01Service.detailNotice(notice_id);
     }
+
+    // 공지사항 수정하기
+    @PostMapping(value= "modify")
+    public void updateNotice(KANTI01VO KANTI01VO){
+      System.out.println("여기는수정하기 컨트롤러");
+      System.out.println("KANTI01VO??" + KANTI01VO);
+      KANTI01Service.updateNotice(KANTI01VO);
+    }
     
+    //공지사항 삭제
+    @PostMapping(value="delete")
+    public void deleteNotice(@RequestParam(value = "notice_id") String notice_id){
+      System.out.println("삭제하기 컨트롤러");
+      System.out.println("삭제하기 컨트롤러notice_id?"+ notice_id);
+
+      KANTI01Service.deleteNotice(notice_id);
+    }
     
 }

@@ -63,6 +63,31 @@ public class KANTI01Service {
 
     // 상세보기
     public KANTI01VO detailNotice(String notice_id) {
-        return KANTI01DAO.detailNotice(notice_id);
+       return KANTI01DAO.detailNotice(notice_id); 
+    }
+
+    //공지사항 수정하기
+    public void updateNotice(KANTI01VO KANTI01VO){
+        System.out.println("수정하기 서비스");
+        KANTI01DAO.updateNotice(KANTI01VO);
+
+        // KANTI01VO.getAttachFile이 있으면 파일저장!
+        if (KANTI01VO.getAttachFile() != null) {
+            for (int i = 0; i < KANTI01VO.getAttachFile().length; i++) {
+                System.out.println("File Upload << " + i + " >>th");
+                System.out.println(KANTI01VO.getAttachFile()[i].getOriginalFilename());
+                FileCommon.fileStore(KANTI01VO.getAttachFile()[i], KANTI01VO.getPost_type(), KANTI01VO.getNotice_id());
+            }
+            // 저장된 파일 갯수 리턴
+            int filecount = KANTI01VO.getAttachFile().length;
+            System.out.println("filecount??" + filecount);
+        }
+    }
+
+    // //공지사항 삭제
+
+    public void deleteNotice(String notice_id){
+        System.out.println("여기는 삭제 서비스"+ notice_id);
+        KANTI01DAO.deleteNotice(notice_id);
     }
 }

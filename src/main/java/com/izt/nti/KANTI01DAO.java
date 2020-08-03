@@ -1,5 +1,6 @@
 package com.izt.nti;
 
+import java.io.Console;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -43,5 +44,17 @@ public class KANTI01DAO {
     public KANTI01VO detailNotice(String notice_id) {
         System.out.println("detailNotice 다오 도착");
         return sqlSession.selectOne("detailNotice", notice_id);
+    }
+    
+    //공지사항 수정
+    public void updateNotice(KANTI01VO KANTI01VO){
+        System.out.println("updateNotice 다오 도착");
+        sqlSession.update("updateNotice",KANTI01VO);
+    }
+
+    //공지사항 삭제
+    public void deleteNotice(String notice_id){
+        System.out.println("?" + notice_id);
+        sqlSession.update("deleteNotice", notice_id);
     }
 }
