@@ -39,9 +39,9 @@
           <![CDATA[
                AND tq.status = #{status}
           ]]>
-          </if>    
+          </if>
           <![CDATA[ 
-             ORDER BY reg_date_tq 
+             ORDER BY reg_date_ta desc
           ]]>
    </select>
 

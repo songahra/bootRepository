@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KAKND01">
+    <select id="getList" parameterType="map" resultType="KAKND01VO">
+        <![CDATA[
+            select 
+                TM.manual_id as manual_id,
+                tm.title as title,
+                tm.reg_date as reg_date,
+                (select tc.code_content from tb_code tc where tc.code_id = tm.solution_code ) as solution,
+                tm.hit as hit,
+                (select tu.user_name from tb_user tu where tu.user_id = tm.reg_userid )as userName ,
+                (select count(*) from tb_file tf where tf.post_id = tm.manual_id ) as file
+            from tb_manual tm 
+            where 1=1
+              and tm.display_yn = 'Y'
+        ]]>
+        <if test="title != null and title != ''">
+        <![CDATA[
+            and tm.title like '%'||#{title}||'%'
+        ]]>
+        </if>
+        <if test="solution != null and solution != ''">
+        <![CDATA[
+            and tm.solution_code = #{solution}
+        ]]>
+        </if>
+        <if test="true">
+        <![CDATA[ 
+             ORDER BY tm.reg_date desc
+          ]]>
+        </if>
+    </select>
+    <select id="postWrite" parameterType="KAKND01VO">
+        <![CDATA[
+            insert into tb_manual (manual_id, reg_userid , title, solution_code , "content", ver)
+                           values (#{manual_id}, 
+                                   #{reg_userid},
+                                   #{title},
+                                   #{solution},
+                                   #{content},
+                                   #{version})
+        ]]>
+    </select>
+    <select id="getDetail" parameterType="map" resultType="KAKND01VO">
+        <![CDATA[
+            with a as (update tb_manual set hit = hit+1 where manual_id = #{manual_id})
+            select 
+                TM.manual_id as manual_id, 
+                TM."content" as "content",
+                (select tc.code_content from tb_code tc where tc.code_id = tm.solution_code) as solution,
+                tm.title as title,
+                tm.ver as version,
+                tm.reg_date as reg_date,
+                tm.reg_userid as reg_userid 
+            from tb_manual tm 
+            where tm.manual_id = #{manual_id}
+        ]]>
+    </select>
+    <select id="getModiDetail" parameterType="map" resultType="KAKND01VO">
+        <![CDATA[
+            select 
+                TM.manual_id as manual_id, 
+                TM."content" as "content",
+                (select tc.code_content from tb_code tc where tc.code_id = tm.solution_code) as solution,
+                tm.title as title,
+                tm.ver as version,
+                tm.reg_date as reg_date,
+                tm.reg_userid as reg_userid 
+            from tb_manual tm 
+            where tm.manual_id = #{manual_id}
+        ]]>
+    </select>
+    
+    <select id="Modify" parameterType="KAKND01VO">
+        <![CDATA[
+            update tb_manual set title=#{title}, ver=#{version}, "content"=#{content}, update_date = now(), update_userid = #{update_userid} where manual_id = #{manual_id}
+        ]]>
+    </select>
+    <select id="delete" parameterType="KAKND01VO">
+        <![CDATA[
+            update tb_manual set display_yn = 'N' where manual_id = #{manual_id}
+        ]]>
+    </select>
+</mapper>

@@ -8,6 +8,7 @@
 		select 
 			(select tc.code_content from tb_code tc where tc.code_id = tp.solution_id) as "solution",
 			(select count(*) from tb_point tp2 where tp2.post_type = 'Q' 
+												 and tp2.act_code like 'PA01%'
 												 and tp2.solution_id = tp.solution_id
 												 and tp2.display_yn = 'Y'
 	]]>
@@ -20,6 +21,7 @@
 	<![CDATA[ 
 													) as "question",
 			(select count(*) from tb_point tp2 where tp2.post_type = 'A' 
+												 and tp2.act_code like 'PA03%'
                                         		 and tp2.solution_id = tp.solution_id 
 												 and tp2.display_yn = 'Y'
 	]]>
@@ -111,6 +113,7 @@
 			(select tu.dept from tb_user tu where tu.user_id = tp.user_id ) as "userDept",
 			(select tu.user_id from tb_user tu where tu.user_id = tp.user_id ) as "user_id",
 			(select count(*) from tb_point tp2 where tp2.post_type = 'Q'
+												 and tp2.act_code like 'PA01%'
 			                                     and tp2.display_yn = 'Y'
 	]]>
 	<if test="(sDate != null and sDate != '') and (eDate != null and eDate != '')">
@@ -121,7 +124,9 @@
 	</if>
 	<![CDATA[ 
 													and tp2.user_id = tp.user_id ) as "question",
-			(select count(*) from tb_point tp2 where tp2.post_type = 'A' and tp2.display_yn = 'Y'
+			(select count(*) from tb_point tp2 where tp2.post_type = 'A' 
+												 and tp2.act_code like 'PA03%'
+												 and tp2.display_yn = 'Y'
 	]]>
 	<if test="(sDate != null and sDate != '') and (eDate != null and eDate != '')">
 		<![CDATA[
@@ -301,6 +306,7 @@
 			  and tp.display_yn = 'Y'
 			  and tp.user_id = #{uId} 
 			  and tp.post_type = 'A' 
+			  and tp.act_code like 'PA03%'
 		]]>
 		<if test="(sDate != null and sDate != '') and (eDate != null and eDate != '')">
 			<![CDATA[
@@ -329,6 +335,7 @@
 			  and tp.display_yn = 'Y'
 			  and tp.user_id = #{uId} 
 			  and tp.post_type = 'Q' 
+			  and tp.act_code like 'PA01%'
 		]]>
 		<if test="(sDate != null and sDate != '') and (eDate != null and eDate != '')">
 			<![CDATA[
@@ -358,7 +365,6 @@
 			where 1=1
 			  and tp.display_yn = 'Y'
 			  and tp.user_id = #{uId} 
-			  and tq.score < 3 
 			  and tp.act_code like 'PA02%' 
 		]]>
 		<if test="(sDate != null and sDate != '') and (eDate != null and eDate != '')">
@@ -367,6 +373,9 @@
 									and to_timestamp(concat(#{eDate},' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS.MS')
 			]]>
 		</if>
+		<!-- <![CDATA[
+						ORDER BY TP.REG_DATE ASC
+		]]> -->
 	</select>
 
 </mapper>
