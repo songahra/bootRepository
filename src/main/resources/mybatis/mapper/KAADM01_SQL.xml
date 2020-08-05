@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kAADM01">
+    <select id="getPjList"  parameterType="map"  resultType="KAADM01VO">
+		<![CDATA[
+            select /* sdk knm/KAADM01_SQL.xml - getPjList - 설정 프로젝트 관리 리스트 */
+                   project_id
+                 , project_name
+                 , customer
+                 , CONCAT(project_start_date, ' ~ ', project_end_date) as term
+              from tb_project
+		]]>
+	</select>
+
+  <select id="srchPjList"  resultType="KAADM01VO">
+		      <![CDATA[
+            select /* sdk knm/KAADM01_SQL.xml - srchPjList - 설정 프로젝트 조회 리스트 */
+                   project_id
+                 , project_name
+                 , CONCAT(project_start_date, ' ~ ', project_end_date) as term
+              from tb_project
+             where 1=1 
+		      ]]>
+          <if test='project_name != "" and project_name != null '> 
+          <![CDATA[
+               and project_name like '%'||#{project_name}||'%'
+          ]]>
+          </if>
+          <if test='customer != "" and customer != null '> 
+          <![CDATA[
+               and customer like '%'||#{customer}||'%'
+          ]]>
+          </if>
+          <if test='project_start_date != "" and project_start_date != null'> 
+          <![CDATA[
+               and project_start_date between to_timestamp(#{project_start_date}||'000000', 'yyyymmddhh24miss') 
+                                          and to_timestamp(#{project_end_date}  ||'235959', 'yyyymmddhh24miss')
+          ]]>
+          </if>
+          <if test='project_end_date != "" and project_end_date != null'> 
+          <![CDATA[
+               and project_end_date between to_timestamp(#{project_start_date}||'000000', 'yyyymmddhh24miss') 
+                                        and to_timestamp(#{project_end_date}  ||'235959', 'yyyymmddhh24miss')
+          ]]>
+          </if>
+	</select>
+   
+</mapper>
