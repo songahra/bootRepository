@@ -15,7 +15,7 @@
              , tc.code_display_yn   /* 사용여부 */
              , TO_CHAR(tc.update_date, 'YYYY-MM-DD HH24:MI') as update_date/* 수정일시 */
          from tb_code tc 
-        order by tc.code_name
+        order by tc.code_id
       ]]>
    </select>
 
@@ -41,7 +41,7 @@
       </if>
       <if test='code_id != "" and code_id != null '> 
       <![CDATA[
-	        and tc.code_id like'%'||#{code_id}||'%'
+	        and tc.code_id like '%'||#{code_id}||'%'
         ]]>
       </if>
       <if test='code_content != "" and code_content != null '> 
@@ -51,52 +51,50 @@
       </if>
    </select>
 
-   <insert id="insertCodeInfo" parameterType="java.util.List">
-      <foreach collection="list" item="item" separator=";">
+   <insert id="insertCodeInfo" parameterType="KAADM03VO">
       <![CDATA[
         insert  /* sdk adm/KAADM03.xml - insertCodeInfo - 코드정보 등록 */
-          into tb_code tc
-             ( tc.code_name        /* 코드명 */
-             , tc.code_id          /* 코드ID */
-             , tc.code_type        /* 유형  */  
-             , tc.code_content     /* 코드값 */
-             , tc.code_explain     /* 코드값 내용 */
-             , tc.code_up_id       /* 상위 CODE ID */
-             , tc.code_order       /* 정렬순서 */
-             , tc.code_display_yn  /* 사용여부 */
-             , tc.reg_userid       /* 등록자 */
-             , tc.reg_date)        /* 등록일시 */
+          into tb_code 
+             ( code_name        /* 코드명 */
+             , code_id          /* 코드ID */
+             , code_type        /* 유형  */  
+             , code_value       /* 코드값  */  
+             , code_content     /* 코드값 내용 */
+             , code_explain     /* 코드 내용 */
+             , code_up_id       /* 상위 CODE ID */
+             , code_order       /* 정렬순서 */
+             , reg_userid       /* 등록자 */
+             , reg_date)        /* 등록일시 */
         values
-            ( #{item.code_name}
-            , #{item.code_id} 
-            , #{item.code_type}
-            , #{item.code_content}
-            , #{item.code_explain}
-            , #{item.code_up_id}
-            , #{item.code_order}
-            , #{item.code_display_yn} 
-            , ##{item.userid} 
-            , currnet_timestamp )    
+            ( #{code_name}
+            , #{code_id} 
+            , #{code_type}
+            , #{code_value}
+            , #{code_content}
+            , #{code_explain}
+            , #{code_up_id}
+            , #{code_order}  
+            , #{userid} 
+            , current_timestamp )    
       ]]>
-      </foreach>
    </insert>
 
     <update id="updateCodeInfo" parameterType="java.util.List">
       <foreach collection="list" item="item" separator=";">
       <![CDATA[
-        update tb_code tc /* sdk adm/KAADM03.xml - updateCodeInfo - 코드정보 수정 */
+        update tb_code  /* sdk adm/KAADM03.xml - updateCodeInfo - 코드정보 수정 */
            set 
-               tc.code_name       = #{item.code_name}       /* 코드명 */
-             , tc.code_id         = #{item.code_id}         /* 코드ID */
-             , tc.code_type       = #{item.code_type}       /* 유형  */  
-             , tc.code_content    = #{item.code_content}    /* 코드값 */
-             , tc.code_explain    = #{item.code_explain}    /* 코드값 내용 */
-             , tc.code_up_id      = #{item.code_up_id}      /* 상위 CODE ID */
-             , tc.code_order      = #{item.code_order}      /* 정렬순서 */
-             , tc.code_display_yn = #{item.code_display_yn} /* 사용여부 */
-             , tc.update_userid   = #{item.userid}          /* 수정자 */
-             , tc.update_date     = currnet_timestamp       /* 수정일시 */
-         where tc.code_id         = #{item.code_id} 
+               code_name       = #{item.code_name}       /* 코드명 */
+             , code_id         = #{item.code_id}         /* 코드ID */
+             , code_type       = #{item.code_type}       /* 유형  */  
+             , code_content    = #{item.code_content}    /* 코드값 */
+             , code_explain    = #{item.code_explain}    /* 코드값 내용 */
+             , code_up_id      = #{item.code_up_id}      /* 상위 CODE ID */
+             , code_order      = #{item.code_order}      /* 정렬순서 */
+             , code_display_yn = #{item.code_display_yn} /* 사용여부 */
+             , update_userid   = #{item.userid}          /* 수정자 */
+             , update_date     = current_timestamp       /* 수정일시 */
+         where code_id         = #{item.code_id} 
       ]]>
       </foreach>
    </update>

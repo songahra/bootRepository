@@ -34,4 +34,24 @@ public class KAADM03Service {
         System.out.println("KAADM03Service srchCodeList called..");
         return kAADM03DAO.srchCodeList(map);
     }
+
+    // 설정>사용자권한 등록
+    public int write(KAADM03VO kAADM03VO) {
+        System.out.println("KAADM03Service write called..");
+        return kAADM03DAO.write(kAADM03VO);
+    }
+
+    // 설정>사용자권한 수정
+    public int modify(List<KAADM03VO> list) {
+        System.out.println("KAADM03Service modify called..");
+        return kAADM03DAO.modify(list);
+    }
+
+    // 설정>사용자권한 삭제
+    public int delete(List<KAADM03VO> list) {
+        System.out.println("KAADM03Service delete called..");
+        return kAADM03DAO.delete(list);
+    }
+    
+
 }

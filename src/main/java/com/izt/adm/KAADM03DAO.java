@@ -25,16 +25,36 @@ public class KAADM03DAO {
     
     private final String mapperNameSpace = "kAADM03.";
     
-    // 설정 유저 리스트 
+    // 설정 코드 리스트 
     public List<KAADM03VO> codeList(){
         System.out.println("KAADM03DAO codeList called...");
         return sqlSession.selectList(mapperNameSpace+"codeList");
     }
 
-    // 설정 유저 리스트 조회
+    // 설정 코드 리스트 조회
     public List<KAADM03VO> srchCodeList(Map<String, Object> map){
         System.out.println("KAADM03DAO srchCodeList called...");
-        return sqlSession.selectList(mapperNameSpace+"srchCodeList");
+        System.out.println("Kssssss.." + map.get("code_content"));
+        
+        return sqlSession.selectList(mapperNameSpace+"srchCodeList",map);
+    }
+
+    // 설정 코드 등록
+    public int write(KAADM03VO kAADM03VO){
+        System.out.println("KAADM03DAO write called...");
+        return sqlSession.insert(mapperNameSpace+"insertCodeInfo", kAADM03VO);
+    }
+
+    // 설정 코드 수정
+    public int modify(List<KAADM03VO> list){
+        System.out.println("KAADM03DAO modify called...");
+        return sqlSession.update(mapperNameSpace+"updateCodeInfo", list);
+    }
+
+    // 설정 코드 삭제
+    public int delete(List<KAADM03VO> list){
+        System.out.println("KAADM03DAO srchCodeList called...");
+        return sqlSession.delete(mapperNameSpace+"deleteCodeInfo", list);
     }
 
 }

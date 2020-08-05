@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class KAADM02VO {
-		// user 정보
 	// user 정보
 	private String user_id;
 	private String update_userid;

@@ -43,6 +43,12 @@ public class KAKNM01DAO {
         return sqlSession.selectOne(mapperNameSpace+"getDetail", question_id);
     }     
 
+    // 지식관리 질문 조회수 증가
+    public void updateQuHite(String question_id){
+        System.out.println("KAKNM01DAO getList called...");
+        sqlSession.update(mapperNameSpace+"updateQuHite", question_id);
+    }    
+
     // 지식관리 기술문의 질문 id 조회
     public KAKNM01VO srchQuId(String question_id){
         System.out.println("KAKNM01DAO srchQuId called...");

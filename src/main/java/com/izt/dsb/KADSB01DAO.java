@@ -30,7 +30,12 @@ public class KADSB01DAO {
         System.out.println("KADSB01DAO main called...");
         return sqlSession.selectList(mapperNameSpace+"main");
     }
-   
-    
 
+        
+    // 설정 유저 리스트 
+    public List<KADSB01VO> noticeList(){
+        System.out.println("KADSB01DAO noticeList called...");
+        return sqlSession.selectList(mapperNameSpace+"noticeList");
+    }
+    
 }
