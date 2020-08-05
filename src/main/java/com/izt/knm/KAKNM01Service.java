@@ -54,6 +54,8 @@ public class KAKNM01Service {
     // 상세조회
     public KAKNM01VO getDetail(String question_id) {
         System.out.println("KAKNM01Service getDetail");
+        
+        kAKNM01DAO.updateQuHite(question_id);
         return kAKNM01DAO.getDetail(question_id);
     }
 

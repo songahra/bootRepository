@@ -14,6 +14,78 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class KADSB01VO {
-	// user 정보
+	private String solution;
+	private String question;
+	private String answer;
+	private String scoreCount;
+	private String avgScore;
+	private String dueDate;
+	private String point;
+	
+	private String title;
+
+	public String getSolution() {
+		return solution;
+	}
+
+	public void setSolution(String solution) {
+		this.solution = solution;
+	}
+
+	public String getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(String question) {
+		this.question = question;
+	}
+
+	public String getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+
+	public String getScoreCount() {
+		return scoreCount;
+	}
+
+	public void setScoreCount(String scoreCount) {
+		this.scoreCount = scoreCount;
+	}
+
+	public String getAvgScore() {
+		return avgScore;
+	}
+
+	public void setAvgScore(String avgScore) {
+		this.avgScore = avgScore;
+	}
+
+	public String getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(String dueDate) {
+		this.dueDate = dueDate;
+	}
+
+	public String getPoint() {
+		return point;
+	}
+
+	public void setPoint(String point) {
+		this.point = point;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 	
 }

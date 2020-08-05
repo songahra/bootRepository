@@ -15,9 +15,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class KAADM03VO {
 	// code 정보
+	private String userid;
 	private String code_name;
 	private String code_id;
 	private String code_type;
+	private String code_value;
 	private String code_content;
 	private String code_explain;
 	private String code_up_id;
@@ -27,7 +29,14 @@ public class KAADM03VO {
 	private String update_date;
 	private String reg_userid;
 	private String update_userid;
-	
+	private String flag;
+
+	public String getUserid() {
+		return userid;
+	}
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
 	public String getCode_name() {
 		return code_name;
 	}
@@ -45,6 +54,12 @@ public class KAADM03VO {
 	}
 	public void setCode_type(String code_type) {
 		this.code_type = code_type;
+	}
+	public String getCode_value() {
+		return code_value;
+	}
+	public void setCode_value(String code_value) {
+		this.code_value = code_value;
 	}
 	public String getCode_content() {
 		return code_content;
@@ -100,12 +115,19 @@ public class KAADM03VO {
 	public void setUpdate_userid(String update_userid) {
 		this.update_userid = update_userid;
 	}
+	public String getFlag() {
+		return flag;
+	}
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
 	@Override
 	public String toString() {
-		return "cc [code_name=" + code_name + ", code_id=" + code_id + ", code_type=" + code_type + ", code_content="
-				+ code_content + ", code_explain=" + code_explain + ", code_up_id=" + code_up_id + ", code_order="
-				+ code_order + ", code_display_yn=" + code_display_yn + ", reg_date=" + reg_date + ", update_date="
-				+ update_date + ", reg_userid=" + reg_userid + ", update_userid=" + update_userid + "]";
+		return "cc [userid=" + userid + ", code_name=" + code_name + ", code_id=" + code_id + ", code_type=" + code_type
+				+ ", code_value=" + code_value + ", code_content=" + code_content + ", code_explain=" + code_explain
+				+ ", code_up_id=" + code_up_id + ", code_order=" + code_order + ", code_display_yn=" + code_display_yn
+				+ ", reg_date=" + reg_date + ", update_date=" + update_date + ", reg_userid=" + reg_userid
+				+ ", update_userid=" + update_userid + ", flag=" + flag + "]";
 	}
 	
 }

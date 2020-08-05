@@ -29,5 +29,10 @@ public class KADSB01Service {
         return kADSB01DAO.main();
     }
 
+    // 설정>사용자권한 메인화면 리스트조회
+    public List<KADSB01VO> noticeList() {
+        System.out.println("KADSB01Service main called..");
+        return kADSB01DAO.noticeList();
+    }
     
 }

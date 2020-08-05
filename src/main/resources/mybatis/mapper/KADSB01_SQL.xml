@@ -2,9 +2,62 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kADSB01">
-    <select id="main" parameterType="KADSB01">
+    <select id="main" resultType="KADSB01VO">
     <![CDATA[
-    
+        select 
+		      /* 솔루션별 질의응답 (1년치)------------------------------------------------------------------------*/
+			   (select tc.code_content                                              
+			      from tb_code tc 
+			     where tc.code_id = tp.solution_id) as solution               /* 솔루션 */
+			 , (select count(*) 
+			      from tb_point tp2 
+			     where tp2.post_type = 'Q' 
+			  	   and tp2.solution_id = tp.solution_id
+			   	   and tp2.display_yn = 'Y'
+			       and tp2.reg_date between (current_timestamp + '-1 years')
+                                        and  current_timestamp ) as question   /* 질문 */
+			 , (select count(*) 
+			      from tb_point tp2 
+			     where tp2.post_type = 'A' 
+                   and tp2.solution_id = tp.solution_id 
+			       and tp2.display_yn = 'Y'
+			       and tp2.reg_date between (current_timestamp + '-1 years')
+                                        and  current_timestamp ) as answer   /* 답변 */
+			 , (select count(*) 
+			      from tb_point tp2 
+			     where tp2.act_code like 'PA02%'
+			  	   and tp2.solution_id = tp.solution_id 
+			  	   and tp2.reg_date between (current_timestamp + '-1 years')
+                                        and  current_timestamp ) as scoreCount /* 평점(평균) */ 
+			 , to_char(avg(tb_qa.score), 'FM9.0') as "avgScore"
+			 , concat(COALESCE((to_char(AVG(tb_qa.tadate - tb_qa.tqdate), 'DD')),'--'),' 일') as dueDate  /* 경과일(평균) */ 
+			 , (select sum(tp3.point_value ) 
+			      from tb_point tp3
+			     where tp3.solution_id = tp.solution_id 
+			       and tp3.display_yn = 'Y') as point                       /* 지식포인트 */
+	      from tb_point tp 
+	  	   left join
+		  	(select 
+					ta.reg_date as "tadate"
+				  , tq.reg_date as "tqdate"
+				  ,	tq.score as "score"
+				  ,	tq.solution_id as "solution"
+			  from tb_question tq 
+			  left join tb_answer ta 
+				on tq.answer_id = ta.answer_id
+			 where 1=1 
+			   and tq.display_yn = 'Y') as TB_QA
+		  on TB_QA.SOLUTION = TP.solution_id 
+	   group by tp.solution_id
+    ]]>
+    </select>
+
+    <select id="noticeList" resultType="KADSB01VO">
+    <![CDATA[
+      select title
+	    from tb_notice
+	   order by reg_date desc
+	   limit 3
     ]]>
     </select>
 
