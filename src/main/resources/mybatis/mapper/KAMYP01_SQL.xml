@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="KAMYP01">
+
+<!-- MYPAGE 조회 -->
+<select id="selectMypage" resultMap="selectList" parameterType="String">
+<![CDATA[
+    (select tq.question_id as id , tq.title , to_char(tq.reg_date, 'yyyy-mm-dd HH24:mi') as reg_date , tq.status
+    from tb_question tq 
+    where reg_userid = #{user_id} and display_yn ='Y' LIMIT 4)
+    union
+    (select ta.answer_id as id, tq.title,  to_char(ta.reg_date, 'yyyy-mm-dd HH24:mi') as reg_date , status
+    from tb_answer ta , tb_question tq 
+    where ta.reg_userid = #{user_id} and ta.display_yn ='Y' and ta.answer_id = tq.answer_id LIMIT 4)
+    union 
+	(select tn.notice_id as id, title,  to_char(reg_date, 'yyyy-mm-dd HH24:mi') as reg_date, display_yn as status
+    from tb_notice tn where display_yn ='Y' LIMIT 4)
+    ]]>
+</select>
+
+	<resultMap type="map" id="selectList">
+	<result column="id" property="id"/>
+	<result column="title" property="title"/>
+	<result column="reg_date" property="reg_date"/>
+	<result column="status" property="status"/>
+	</resultMap>
+<!-- question_id 조회 -->
+<select id="getId" parameterType="String" resultType="String">
+<![CDATA[
+   SELECT question_id
+   FROM tb_question tq 
+   WHERE answer_id = #{answer_id}
+]]>
+</select>
+</mapper>

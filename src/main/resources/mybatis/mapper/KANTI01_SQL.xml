@@ -41,6 +41,7 @@ INSERT INTO tb_notice(
    tn."content" 
    from tb_notice tn
    where tn.display_yn ='Y'
+   order by tn.reg_date desc
     ]]>
 </select>
 
@@ -78,16 +79,17 @@ INSERT INTO tb_notice(
           </when>
           <otherwise> 
           <![CDATA[
-      order by tn.reg_date asc
+      order by tn.reg_date desc
           ]]>
           </otherwise> 
-          </choose>
+    </choose>
 </select>
 
 <!-- 조회수 +1 -->
 <update id="plusCnt" parameterType="String">
   <![CDATA[
     UPDATE tb_notice
+
     SET hit = hit + 1
     WHERE notice_id = #{notice_id}
     ]]>

@@ -3,20 +3,20 @@ package com.izt.nti;
 import org.springframework.web.multipart.MultipartFile;
 
 public class KANTI01VO {
-    public String notice_id;
-    public String reg_userid;
-    public String update_userid;
-    public String solution_code;
-    public String title;
-    public String content;
-    public String reg_date;
-    public String update_date;
-    public String display_yn;
-    public int hit;
+    private String notice_id;
+    private String reg_userid;
+    private String update_userid;
+    private String solution_code;
+    private String title;
+    private String content;
+    private String reg_date;
+    private String update_date;
+    private String display_yn;
+    private int hit;
     private MultipartFile[] attachFile; // 저장될 파일
-    public String post_type;
-    public int file_count;
-    public String user_name;
+    private String post_type;
+    private int file_count;
+    private String user_name;
     
     public String getNotice_id() {
         return notice_id;
