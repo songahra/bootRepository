@@ -36,7 +36,10 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	compile("io.jsonwebtoken:jjwt:0.9.1")
-	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	compile group: 'org.mindrot', name: 'jbcrypt', version: '0.3m'
+	compile 'org.springframework:spring-context-support'
+    compile group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
+    compile('org.springframework.boot:spring-boot-starter-mail')
 
 }
 
