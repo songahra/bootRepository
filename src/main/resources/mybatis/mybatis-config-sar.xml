@@ -4,11 +4,51 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <typeAliases>
-        <typeAlias type="com.izt.log.KALOG01VO" alias="KALOG01VO"/>
+        <typeAlias alias="KALOG01VO"  type="com.izt.log.KALOG01VO"/>
+        
+        <typeAlias alias="KADSB01VO"  type="com.izt.dsb.KADSB01VO"/>
+        
+        <typeAlias alias="KAKNM01VO"  type="com.izt.knm.KAKNM01VO"/>
+        <typeAlias alias="KAKNM02VO"  type="com.izt.knm.KAKNM02VO"/>
+        
+        <typeAlias alias="KAADM01VO"  type="com.izt.adm.KAADM01VO"/>
+        <typeAlias alias="KAADM02VO"  type="com.izt.adm.KAADM02VO"/>
+        <typeAlias alias="KAADM03VO"  type="com.izt.adm.KAADM03VO"/>
+        <typeAlias alias="KAADM04VO"  type="com.izt.adm.KAADM04VO"/>
+       
+        <typeAlias alias="KAKND01VO"  type="com.izt.knd.KAKND01VO" />
+        <typeAlias alias="KANTI01VO"  type="com.izt.nti.KANTI01VO"/>
+        <typeAlias alias="KANTI01DTO" type="com.izt.nti.KANTI01DTO"/>
+
+        <typeAlias alias="KAPRM01VO"  type="com.izt.prm.KAPRM01VO"/>
+        <typeAlias alias="KAPRM01DTO" type="com.izt.prm.KAPRM01DTO"/>
+        <typeAlias alias="KAPRM02DTO" type="com.izt.prm.KAPRM02DTO"/>
+
+        <typeAlias alias="FileVo"     type="com.izt.common.file.FileVo"/>
     </typeAliases>
 
     <mappers>
-        <mapper resource="mybatis/mapper/KALOG01.xml"/>
+        <mapper resource="mybatis/mapper/KADSB01_SQL.xml"/>
+
+        <mapper resource="mybatis/mapper/KAKNM01_SQL.xml"/> 
+        <mapper resource="mybatis/mapper/KAKNM02_SQL.xml"/>
+        <mapper resource="mybatis/mapper/KALOG01_SQL.xml"/>
+
+        <mapper resource="mybatis/mapper/KAADM01_SQL.xml"/>
+        <mapper resource="mybatis/mapper/KAADM02_SQL.xml"/>
+        <mapper resource="mybatis/mapper/KAADM03_SQL.xml"/>
+        <mapper resource="mybatis/mapper/KAADM04_SQL.xml"/>
+        
+        <mapper resource="mybatis/mapper/KANTI01_SQL.xml"/>
+        <mapper resource="mybatis/mapper/KAKND01_SQL.xml"/>
+
+        <mapper resource="mybatis/mapper/KANTI01_SQL.xml"/>
+        <mapper resource="mybatis/mapper/KAMYP01_SQL.xml"/>
+
+        <mapper resource="mybatis/mapper/KAPRM01_SQL.xml"/>
+        <mapper resource="mybatis/mapper/File_SQL.xml"/>
     </mappers>
+
+
 
 </configuration>
