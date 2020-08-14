@@ -81,6 +81,7 @@ public class KAKNM01Service {
          if(up_question_id != ""  || up_question_id.trim() != "" || up_question_id.equals(true)){
             // 재질문등록
             System.out.println("재질문등록일때 => "+ up_question_id);
+            // kAKNM01VO.setStatus("RQ");
             kAKNM01DAO.updateQuInfo(kAKNM01VO);
             result = kAKNM01DAO.insertQuInfo(kAKNM01VO);
             

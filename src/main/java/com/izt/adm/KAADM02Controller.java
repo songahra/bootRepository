@@ -71,7 +71,7 @@ public class KAADM02Controller {
     }
 
     /**
-    * 설정 관한관리 사용자정보 삭제/수정
+    * 설정 관한관리 사용자정보 수정
     * @param KAKNM01VO
     * @return void
     * @exception 
@@ -87,7 +87,7 @@ public class KAADM02Controller {
     }  
 
     /**
-    * 설정 관한관리 사용자정보 삭제/수정
+    * 설정 관한관리 사용자정보 삭제
     * @param KAKNM01VO
     * @return void
     * @exception 

@@ -21,6 +21,7 @@
              , COALESCE(TO_CHAR(tu.update_date, 'YYYY-MM-DD HH24:MI'),'--') AS update_date  /* 수정일 */
              , COALESCE(tu.login_cnt,0) AS login_cnt  /* 로그인 횟수 */ 
           from tb_user tu
+         order by user_id
       ]]>
    </select>
 
@@ -57,6 +58,9 @@
 	        and company like '%'||#{company}||'%'
         ]]>
       </if>
+      <![CDATA[
+	      order by user_id
+      ]]>
    </select>
 
     <update id="updateUserInfo" parameterType="java.util.List">

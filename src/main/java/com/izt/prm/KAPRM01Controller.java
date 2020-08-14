@@ -37,33 +37,8 @@ import org.springframework.web.bind.annotation.RestController;
     
    @PostMapping(value="upload")
    public String fileUpload(KAPRM01DTO KAPRM01DTO) {
-        System.out.println("upload하러 들어옴.....");
-        System.out.println(KAPRM01DTO);
-
         String base64Image= KAPRM01Service.fileUpload(KAPRM01DTO);
-        System.out.println("base64Image" + base64Image);
-
-
         return base64Image;
-   //   String fileString = new String();
-   //   InputStream inputStream =  null;
-   //   ByteArrayOutputStream byteOutStream = null;
-   //  try {
-   // inputStream = new BufferedInputStream(image.getInputStream());
-	// byteOutStream = new ByteArrayOutputStream();
-	// int len = 0;
-	// byte[] buf = new byte[1024];
-   //      while ((len = inputStream.read(buf)) != -1) {
-   //           byteOutStream.write(buf, 0, len);
-   //      }
-   //      byte[] fileArray = byteOutStream.toByteArray();
-   //      fileString = new String(Base64.encodeBase64(fileArray));
-
-   //   }catch (IOException e) {
-   //      e.printStackTrace();
-   //  }finally {
-   //  }
-   //  return fileString;
 }//
 
  //비밀번호 변경
@@ -71,7 +46,6 @@ import org.springframework.web.bind.annotation.RestController;
  public ResponseEntity updatePassword(@RequestBody Map<String, Object> param){
         String msg = KAPRM01Service.chkPassword(param);
 
-        System.out.println("컨트롤러에서 msg"+ msg);
         return new ResponseEntity<>(msg,  HttpStatus.valueOf(200));
 
  }
@@ -79,7 +53,6 @@ import org.springframework.web.bind.annotation.RestController;
   //프로필 수정
   @PostMapping(value="updateProfile")
   public ResponseEntity updateProfile(@RequestBody KALOG01VO KALOG01VO) {
-     System.out.println("updateProfile컨트롤러에서 KALOG01VO" + KALOG01VO);
       
      return KAPRM01Service.updateProfile(KALOG01VO);
    }
@@ -87,7 +60,6 @@ import org.springframework.web.bind.annotation.RestController;
    //프로필 조회
    @GetMapping(value="selectProfile")
    public String selectProfile(@RequestParam(value = "user_id") String user_id) {
-      System.out.println("user_id" + user_id);
       return KAPRM01Service.selectProfile(user_id);
    }
 
@@ -103,8 +75,6 @@ import org.springframework.web.bind.annotation.RestController;
       KAPRM02DTO.setStart_date(start_date);
       KAPRM02DTO.setEnd_date(end_date);
       
-      System.out.println("KAPRM02DTO.toString()->" + KAPRM02DTO.toString());
-
       return KAPRM01Service.selectMonthPoint(KAPRM02DTO);
    }
    
@@ -112,8 +82,6 @@ import org.springframework.web.bind.annotation.RestController;
    @GetMapping(value="selectTotalPoint")
    public KAPRM02DTO selectTotalPoint(@RequestParam(value = "user_id") String user_id,
                                      @RequestParam(value="month") String month) {
-      System.out.println("selectTotalPoint컨트롤러 도착"); 
-      System.out.println("값은?");
                                        
       return KAPRM01Service.selectTotalPoint(user_id, month);
    }

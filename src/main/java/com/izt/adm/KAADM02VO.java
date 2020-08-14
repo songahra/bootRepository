@@ -26,7 +26,7 @@ public class KAADM02VO {
 	private String dept;
 	private String use_yn;
 	private String login_lock;
-	private String login_cnt;
+	private int login_cnt;
 	private String update_date;
 	private String reg_date;
 	
@@ -120,11 +120,11 @@ public class KAADM02VO {
 		this.login_lock = login_lock;
 	}
 
-	public String getLogin_cnt() {
+	public int getLogin_cnt() {
 		return login_cnt;
 	}
 
-	public void setLogin_cnt(String login_cnt) {
+	public void setLogin_cnt(int login_cnt) {
 		this.login_cnt = login_cnt;
 	}
 

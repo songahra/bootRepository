@@ -49,6 +49,10 @@
 	        and tc.code_content like '%'||#{code_content}||'%'
         ]]>
       </if>
+      <![CDATA[
+	        order by tc.code_id
+      ]]>
+
    </select>
 
    <insert id="insertCodeInfo" parameterType="KAADM03VO">

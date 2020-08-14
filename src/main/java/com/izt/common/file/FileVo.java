@@ -68,12 +68,14 @@ public class FileVo {
 	public void setFile_size(String file_size) {
 		this.file_size = file_size;
 	}
-	// @Override
-	// public String toString() {
-	// 	return "Practice [post_type=" + post_type + ", post_id=" + post_id + ", org_file_name=" + org_file_name
-	// 			+ ", save_file_name=" + save_file_name + ", file_ext_name=" + file_ext_name + ", file_size=" + file_size
-	// 			+ "]";
-	// }
+
+	
+	@Override
+	public String toString() {
+		return "Practice [post_type=" + post_type + ", post_id=" + post_id + ", org_file_name=" + org_file_name
+				+ ", save_file_name=" + save_file_name + ", file_ext_name=" + file_ext_name + ", file_size=" + file_size
+				+ "]";
+	}
 	
 
 }

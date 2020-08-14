@@ -131,7 +131,6 @@ public class KAPRM01Service {
         KAPRM02DTO.setMonth(month);
 
         System.out.println("selectTotalPoint 서비스 도착");
-        System.out.println(KAPRM02DTO.toString());
 
         int total_point = KAPRM01DAO.selectTotalPoint(user_id);
         int month_total_point = KAPRM01DAO.selectMonthTotalPoint(KAPRM02DTO);

@@ -43,6 +43,7 @@ public class KAADM02Service {
         for (int i = 0; i < list.size(); i++) { 
             String pw= BCrypt.hashpw(list.get(i).getUser_pw(), BCrypt.gensalt());
             list.get(i).setUser_pw(pw);
+            // int cnt = (int)list.get(i).getLogin_cnt();
             System.out.print("-------After set----------- ");
           }
 

@@ -439,7 +439,7 @@
 		<![CDATA[
             update tb_question /* sdk knm/KAKNM01_SQL.xml - updateQuInfo - 지식관리 기술문의 재질문 등록 */
                set requestion_id = #{question_id}      /* 재질문 id */
-                 , status        = "RQ"                /* 상태 */
+                 , status        = 'RQ'                /* 상태 */
                  , update_userid = #{userid}           /* 수정자 */
                  , update_date   = current_timestamp   /* 수정일 */
              where question_id   = #{up_question_id}

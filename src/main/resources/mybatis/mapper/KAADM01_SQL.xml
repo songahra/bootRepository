@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kAADM01">
-    <select id="getPjList"  parameterType="map"  resultType="KAADM01VO">
+    <select id="getPjList" resultType="KAADM01VO">
 		<![CDATA[
             select /* sdk knm/KAADM01_SQL.xml - getPjList - 설정 프로젝트 관리 리스트 */
                    project_id
@@ -13,11 +13,12 @@
 		]]>
 	</select>
 
-  <select id="srchPjList"  resultType="KAADM01VO">
-		      <![CDATA[
+  <select id="srchPjList"   parameterType="map"   resultType="KAADM01VO">
+	     <![CDATA[
             select /* sdk knm/KAADM01_SQL.xml - srchPjList - 설정 프로젝트 조회 리스트 */
                    project_id
                  , project_name
+                 , customer
                  , CONCAT(project_start_date, ' ~ ', project_end_date) as term
               from tb_project
              where 1=1 
@@ -34,14 +35,14 @@
           </if>
           <if test='project_start_date != "" and project_start_date != null'> 
           <![CDATA[
-               and project_start_date between to_timestamp(#{project_start_date}||'000000', 'yyyymmddhh24miss') 
-                                          and to_timestamp(#{project_end_date}  ||'235959', 'yyyymmddhh24miss')
+               and project_start_date between to_timestamp(concat(#{project_start_date},' 00:00:00'), 'YYYY-MM-DD HH24:MI:SS.MS') 
+                                          and to_timestamp(concat(#{project_end_date},' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS.MS')
           ]]>
           </if>
           <if test='project_end_date != "" and project_end_date != null'> 
           <![CDATA[
-               and project_end_date between to_timestamp(#{project_start_date}||'000000', 'yyyymmddhh24miss') 
-                                        and to_timestamp(#{project_end_date}  ||'235959', 'yyyymmddhh24miss')
+               and project_end_date between to_timestamp(concat(#{project_start_date},' 00:00:00'), 'YYYY-MM-DD HH24:MI:SS.MS') 
+                                          and to_timestamp(concat(#{project_end_date},' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS.MS')
           ]]>
           </if>
 	</select>

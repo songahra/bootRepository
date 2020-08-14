@@ -23,6 +23,7 @@ public class KADSB01VO {
 	private String point;
 	
 	private String title;
+	private String notice_id;
 
 	public String getSolution() {
 		return solution;
@@ -86,6 +87,15 @@ public class KADSB01VO {
 
 	public void setTitle(String title) {
 		this.title = title;
+	} 
+	
+	
+	public String getNotice_id() {
+		return notice_id;
+	}
+
+	public void setNotice_id(String notice_id) {
+		this.notice_id = notice_id;
 	}
 	
 }
